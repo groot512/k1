@@ -119,13 +119,16 @@ nav.scrolled{border-color:var(--line)}
 .hero-note i{color:var(--k1)}
 
 /* sticks fan */
-.stage{position:relative;height:min(560px,64vw)}
+.stage{position:relative;height:min(640px,70vw)}
 .stage .hero-photo{
-  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-  width:120%;max-width:none;height:auto;
-  mix-blend-mode:multiply; /* 흰 배경을 페이지 배경에 녹여 경계 제거 */
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-52%);
+  width:148%;max-width:none;height:auto;
+  filter:drop-shadow(0 30px 34px rgba(22,19,15,.16));
 }
-@media (max-width:900px){.stage .hero-photo{width:108%}}
+@media (max-width:900px){
+  .stage{height:min(460px,88vw)}
+  .stage .hero-photo{width:118%}
+}
 .stick{
   position:absolute;left:50%;top:50%;width:104px;height:340px;border-radius:54px;
   transform-origin:50% 88%;
@@ -379,7 +382,7 @@ footer{border-top:1px solid var(--line);padding:3.2rem 0;background:var(--rice)}
       <div class="hero-note reveal d3"><i class="fa-solid fa-plane"></i>기내 반입 OK · 상온 보관 · 부피 80% 다운</div>
     </div>
     <div class="stage" id="stage" aria-label="K1 스틱소스 5종 미리보기">
-      <img class="hero-photo" id="heroPhoto" src="hero-sticks.jpg" alt="부채꼴로 펼쳐진 K1 스틱소스 5종 패키지">
+      <img class="hero-photo" id="heroPhoto" src="hero-sticks.png" alt="부채꼴로 펼쳐진 K1 스틱소스 5종 패키지">
     </div>
   </div>
 </header>
