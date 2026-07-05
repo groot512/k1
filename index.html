@@ -61,7 +61,17 @@ section{padding:clamp(84px,11vw,150px) 0;position:relative}
 }
 #cursor.on{opacity:.9}
 #cursor.grow{width:52px;height:52px;opacity:.18}
-@media (hover:none){#cursor{display:none}}
+#cursorRing{
+  position:fixed;top:0;left:0;width:34px;height:34px;border-radius:50%;
+  border:1.5px solid rgba(232,78,27,.55);pointer-events:none;z-index:9998;
+  transform:translate(-50%,-50%);opacity:0;
+  transition:width .3s,height .3s,border-color .3s,opacity .3s;
+}
+#cursorRing.on{opacity:1}
+#cursorRing.grow{width:64px;height:64px;border-color:rgba(232,78,27,.9);border-style:dashed;animation:ringSpin 6s linear infinite}
+@keyframes ringSpin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+#fx{position:fixed;inset:0;pointer-events:none;z-index:9997}
+@media (hover:none){#cursor,#cursorRing,#fx{display:none}}
 
 /* ---------- nav ---------- */
 nav{
@@ -110,6 +120,14 @@ nav.scrolled{border-color:var(--line)}
 
 /* sticks fan */
 .stage{position:relative;height:min(560px,64vw);perspective:1200px}
+.stage .hero-photo{
+  position:absolute;inset:0;margin:auto;max-height:100%;width:auto;max-width:100%;
+  object-fit:contain;will-change:transform;
+  filter:drop-shadow(0 34px 44px rgba(22,19,15,.22));
+  transition:transform .25s cubic-bezier(.2,.7,.2,1);
+  animation:heroFloat 6s ease-in-out infinite;
+}
+@keyframes heroFloat{0%,100%{translate:0 0}50%{translate:0 -12px}}
 .stick{
   position:absolute;left:50%;top:50%;width:104px;height:340px;border-radius:54px;
   transform-origin:50% 88%;
@@ -200,8 +218,8 @@ nav.scrolled{border-color:var(--line)}
 .scr-video{
   flex:1;position:relative;display:flex;align-items:flex-end;
   background:
-    radial-gradient(320px 200px at 70% 30%, rgba(232,78,27,.55), transparent 70%),
-    radial-gradient(280px 240px at 25% 65%, rgba(185,58,16,.5), transparent 70%),
+    linear-gradient(180deg, rgba(10,6,4,.15) 40%, rgba(10,6,4,.72) 100%),
+    url("kimchi.jpg") center 30%/cover no-repeat,
     linear-gradient(160deg,#3a1508,#1a0c05 70%);
 }
 .scr-video::after{content:"";position:absolute;inset:0;background:
@@ -272,7 +290,17 @@ nav.scrolled{border-color:var(--line)}
 .vcard:hover .vbar span{width:100%}
 
 /* ---------- how ---------- */
-.how-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:1.1rem;margin-top:3rem;counter-reset:step}
+.how-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:2.6rem;align-items:stretch;margin-top:3rem}
+.how-photo{border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow);position:relative;min-height:420px}
+.how-photo img{width:100%;height:100%;object-fit:cover;transition:transform .6s cubic-bezier(.2,.7,.2,1)}
+.how-photo:hover img{transform:scale(1.05)}
+.how-photo .badge{
+  position:absolute;left:1.1rem;bottom:1.1rem;background:rgba(22,19,15,.55);backdrop-filter:blur(8px);
+  color:#fff;font-size:.78rem;font-weight:700;padding:.5rem .95rem;border-radius:100px;
+  display:inline-flex;gap:.5rem;align-items:center;border:1px solid rgba(255,255,255,.2);
+}
+.how-photo .badge i{color:var(--k1)}
+.how-steps{display:grid;grid-template-columns:1fr;gap:1.1rem;counter-reset:step}
 .step{
   border:1px solid var(--line);border-radius:var(--r-lg);padding:2.1rem 1.8rem;position:relative;
   transition:transform .35s cubic-bezier(.2,.7,.2,1),box-shadow .35s;background:var(--paper);overflow:hidden;
@@ -287,7 +315,7 @@ nav.scrolled{border-color:var(--line)}
 .step i{font-size:1.45rem;color:var(--k1);margin-bottom:1.2rem;display:block}
 .step h3{font-size:1.15rem;font-weight:800;letter-spacing:-.02em;margin-bottom:.45rem}
 .step p{font-size:.92rem;color:var(--ink-60)}
-@media (max-width:820px){.how-steps{grid-template-columns:1fr}}
+@media (max-width:820px){.how-grid{grid-template-columns:1fr}.how-photo{min-height:300px}}
 
 /* ---------- CTA ---------- */
 .cta{background:linear-gradient(150deg,var(--k1),var(--k1-deep));color:#fff;text-align:center;
@@ -321,6 +349,8 @@ footer{border-top:1px solid var(--line);padding:3.2rem 0;background:var(--rice)}
 <body>
 
 <div id="cursor" aria-hidden="true"></div>
+<div id="cursorRing" aria-hidden="true"></div>
+<canvas id="fx" aria-hidden="true"></canvas>
 
 <nav id="nav">
   <div class="wrap nav-in">
@@ -351,6 +381,7 @@ footer{border-top:1px solid var(--line);padding:3.2rem 0;background:var(--rice)}
       <div class="hero-note reveal d3"><i class="fa-solid fa-plane"></i>기내 반입 OK · 상온 보관 · 부피 80% 다운</div>
     </div>
     <div class="stage" id="stage" aria-label="K1 스틱소스 5종 미리보기">
+      <img class="hero-photo" id="heroPhoto" src="hero-sticks.jpg" alt="부채꼴로 펼쳐진 K1 스틱소스 5종 패키지">
       <div class="stage-caption"><i class="fa-solid fa-computer-mouse"></i>마우스를 움직여 보세요</div>
     </div>
   </div>
@@ -373,7 +404,7 @@ footer{border-top:1px solid var(--line);padding:3.2rem 0;background:var(--rice)}
     <h2 class="h2 reveal d1">병에 갇힌 한국의 맛을,<br>스틱으로 꺼냈습니다</h2>
     <p class="lead reveal d2">기존 액상 소스는 무겁고, 깨지고, 비쌉니다. K1은 라면 스프에서 답을 찾았습니다 — 가장 익숙한 형태로, 가장 낯선 시장까지.</p>
     <figure class="ps-img reveal d2">
-      <img src="images/problem.jpg" alt="기존 액상 소스의 문제(무겁고 깨지고 비싸다)와 K1 스틱소스 솔루션(가볍고 간편하고 스마트하다) 비교" loading="lazy">
+      <img src="travel.jpg" alt="여권, 항공권과 나란히 놓인 K1 스틱소스 3종 — 여행 가방에 들어가는 한국의 맛" loading="lazy">
     </figure>
     <div class="ps-cards">
       <div class="ps-card reveal"><i class="fa-solid fa-feather"></i><h3>초경량 스틱</h3><p>1회분 10~15g 정량 포장. 여행 가방, 배낭, 주머니 어디든. 항공 액체 규정도 통과합니다.</p></div>
@@ -394,7 +425,7 @@ footer{border-top:1px solid var(--line);padding:3.2rem 0;background:var(--rice)}
       <p class="lead reveal d2">분말 소스 전문기업과 함께 개발한 검증된 배합. 추가 실험은 저희가 끝냈으니, 당신은 3분만 쓰세요.</p>
     </div>
     <figure class="lineup-img reveal">
-      <img src="images/solution.jpg" alt="K1 스틱소스 10종 패키지와 QR 연동 스마트 앱 화면" loading="lazy">
+      <img src="solution.jpg" alt="K1 스틱소스 10종 패키지와 QR 연동 스마트 앱 화면" loading="lazy">
     </figure>
     <div class="chips" role="list">
       <div class="chip reveal" role="listitem" style="--c:#c0392b"><i class="fa-solid fa-fish"></i><div><b>멸치 육수</b><small>Anchovy</small></div></div>
@@ -467,10 +498,16 @@ footer{border-top:1px solid var(--line);padding:3.2rem 0;background:var(--rice)}
   <div class="wrap">
     <span class="eyebrow reveal">How it works</span>
     <h2 class="h2 reveal d1">요리 실력은 필요 없습니다.<br>순서만 있으면 됩니다</h2>
-    <div class="how-steps">
-      <div class="step reveal"><i class="fa-solid fa-qrcode"></i><h3>찍고</h3><p>스틱 뒷면 QR을 스마트폰으로 스캔하면, 이 소스로 만들 수 있는 3분 레시피 영상이 바로 열립니다.</p></div>
-      <div class="step reveal d1"><i class="fa-solid fa-hand-scissors"></i><h3>톡! 털고</h3><p>Easy-Cut 스틱을 손으로 뜯어 냄비에 톡. 계량스푼도 저울도 필요 없는 1회분 정량입니다.</p></div>
-      <div class="step reveal d2"><i class="fa-solid fa-utensils"></i><h3>3분 끓이면 끝</h3><p>영상 따라 3분. 서울의 그 맛이 당신의 식탁에 그대로 올라옵니다. 완성 사진은 커뮤니티에 자랑하세요.</p></div>
+    <div class="how-grid">
+      <figure class="how-photo reveal">
+        <img src="pour.jpg" alt="K1 스틱을 뜯어 뚝배기에 분말을 붓는 장면" loading="lazy">
+        <span class="badge"><i class="fa-solid fa-fire"></i>계량 없이, 톡!</span>
+      </figure>
+      <div class="how-steps">
+        <div class="step reveal"><i class="fa-solid fa-qrcode"></i><h3>찍고</h3><p>스틱 뒷면 QR을 스마트폰으로 스캔하면, 이 소스로 만들 수 있는 3분 레시피 영상이 바로 열립니다.</p></div>
+        <div class="step reveal d1"><i class="fa-solid fa-hand-scissors"></i><h3>톡! 털고</h3><p>Easy-Cut 스틱을 손으로 뜯어 냄비에 톡. 계량스푼도 저울도 필요 없는 1회분 정량입니다.</p></div>
+        <div class="step reveal d2"><i class="fa-solid fa-utensils"></i><h3>3분 끓이면 끝</h3><p>영상 따라 3분. 서울의 그 맛이 당신의 식탁에 그대로 올라옵니다. 완성 사진은 커뮤니티에 자랑하세요.</p></div>
+      </div>
     </div>
   </div>
 </section>
@@ -508,24 +545,95 @@ footer{border-top:1px solid var(--line);padding:3.2rem 0;background:var(--rice)}
 /* ---------- reduced motion flag ---------- */
 const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-/* ---------- custom cursor ---------- */
+/* ---------- image fallback (파일 누락 시 깨짐 아이콘 대신 숨김) ---------- */
+document.querySelectorAll(".ps-img img, .lineup-img img").forEach(img => {
+  img.addEventListener("error", () => { img.closest("figure").style.display = "none"; });
+});
+
+/* ---------- custom cursor: dot + lagging ring + spice particles ---------- */
 const cur = document.getElementById("cursor");
+const ring = document.getElementById("cursorRing");
+const fx = document.getElementById("fx");
 if (matchMedia("(hover:hover)").matches && !RM) {
+  const ctx = fx.getContext("2d");
+  let W, H;
+  const resize = () => { W = fx.width = innerWidth; H = fx.height = innerHeight; };
+  resize(); addEventListener("resize", resize);
+
+  let mx = -100, my = -100, rx = -100, ry = -100, lastEmit = 0;
+  const parts = [];
+  const COLORS = ["#e84e1b","#c0392b","#f0742f","#b93a10","#e8a23c"];
+
+  function emit(x, y, n, boost) {
+    for (let i = 0; i < n; i++) {
+      const a = Math.random() * Math.PI * 2, sp = (boost ? 2.6 : .9) * (Math.random() * .8 + .3);
+      parts.push({
+        x, y,
+        vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - (boost ? 1.2 : .2),
+        life: 1, decay: .015 + Math.random() * .02,
+        r: boost ? Math.random() * 2.4 + 1.2 : Math.random() * 1.7 + .7,
+        c: COLORS[Math.random() * COLORS.length | 0],
+        spin: Math.random() * 6, vspin: (Math.random() - .5) * .3
+      });
+    }
+    if (parts.length > 260) parts.splice(0, parts.length - 260);
+  }
+
   addEventListener("mousemove", e => {
-    cur.classList.add("on");
-    cur.style.transform = `translate(${e.clientX}px,${e.clientY}px) translate(-50%,-50%)`;
+    mx = e.clientX; my = e.clientY;
+    cur.classList.add("on"); ring.classList.add("on");
+    cur.style.transform = `translate(${mx}px,${my}px) translate(-50%,-50%)`;
+    const now = performance.now();
+    if (now - lastEmit > 26) { emit(mx, my, 2, false); lastEmit = now; }
   });
-  document.querySelectorAll("a,button,.chip,.vcard,.pillar").forEach(el => {
-    el.addEventListener("mouseenter", () => cur.classList.add("grow"));
-    el.addEventListener("mouseleave", () => cur.classList.remove("grow"));
+
+  /* 클릭하면 고춧가루 폭발 — 톡! */
+  addEventListener("mousedown", e => {
+    emit(e.clientX, e.clientY, 20, true);
+    ring.animate(
+      [{transform:"translate(-50%,-50%) scale(1)"},{transform:"translate(-50%,-50%) scale(1.6)"},{transform:"translate(-50%,-50%) scale(1)"}],
+      {duration:350, easing:"cubic-bezier(.34,1.56,.64,1)"}
+    );
   });
+
+  document.querySelectorAll("a,button,.chip,.vcard,.pillar,.step").forEach(el => {
+    el.addEventListener("mouseenter", () => { cur.classList.add("grow"); ring.classList.add("grow"); });
+    el.addEventListener("mouseleave", () => { cur.classList.remove("grow"); ring.classList.remove("grow"); });
+  });
+
+  (function loop(){
+    /* ring lags behind the dot (lerp) */
+    rx += (mx - rx) * .16; ry += (my - ry) * .16;
+    if (!ring.classList.contains("grow"))
+      ring.style.transform = `translate(${rx}px,${ry}px) translate(-50%,-50%)`;
+    else
+      ring.style.transform = `translate(${rx}px,${ry}px) translate(-50%,-50%)`;
+
+    /* spice particles: 뿌려진 분말처럼 살짝 떨어지며 사라짐 */
+    ctx.clearRect(0, 0, W, H);
+    for (let i = parts.length - 1; i >= 0; i--) {
+      const p = parts[i];
+      p.x += p.vx; p.y += p.vy; p.vy += .05; p.vx *= .985;
+      p.life -= p.decay; p.spin += p.vspin;
+      if (p.life <= 0) { parts.splice(i, 1); continue; }
+      ctx.save();
+      ctx.globalAlpha = Math.max(p.life, 0) * .85;
+      ctx.translate(p.x, p.y); ctx.rotate(p.spin);
+      ctx.fillStyle = p.c;
+      ctx.fillRect(-p.r, -p.r * .55, p.r * 2, p.r * 1.1); /* 납작한 고춧가루 플레이크 */
+      ctx.restore();
+    }
+    requestAnimationFrame(loop);
+  })();
 }
 
 /* ---------- nav ---------- */
 const nav = document.getElementById("nav");
 addEventListener("scroll", () => nav.classList.toggle("scrolled", scrollY > 10), {passive:true});
 
-/* ---------- hero sticks ---------- */
+/* ---------- hero: 실사 이미지 3D 틸트 (실패 시 CSS 스틱 폴백) ---------- */
+const stage = document.getElementById("stage");
+const heroPhoto = document.getElementById("heroPhoto");
 const STICKS = [
   {name:"김치찌개", en:"Kimchi Stew", c:"#c0392b"},
   {name:"불고기",   en:"Bulgogi",     c:"#6e2c00"},
@@ -533,23 +641,24 @@ const STICKS = [
   {name:"된장찌개", en:"Doenjang",    c:"#7d6608"},
   {name:"사골육수", en:"Beef Bone",   c:"#a04000"},
 ];
-const stage = document.getElementById("stage");
 const mid = (STICKS.length - 1) / 2;
-STICKS.forEach((s, i) => {
-  const d = document.createElement("div");
-  d.className = "stick";
-  d.dataset.i = i;
-  d.style.background = `linear-gradient(165deg, ${s.c}, ${shade(s.c,-28)})`;
-  d.innerHTML = `<span class="brand">K1</span><span class="name">${s.name}</span><span class="en">${s.en}</span>`;
-  stage.appendChild(d);
-});
 function shade(hex, pct){
   const n = parseInt(hex.slice(1),16), a = Math.round(2.55*pct);
   const r = Math.min(255,Math.max(0,(n>>16)+a)), g = Math.min(255,Math.max(0,(n>>8&255)+a)), b = Math.min(255,Math.max(0,(n&255)+a));
   return `rgb(${r},${g},${b})`;
 }
+function buildCssSticks(){
+  STICKS.forEach((s, i) => {
+    const d = document.createElement("div");
+    d.className = "stick"; d.dataset.i = i;
+    d.style.background = `linear-gradient(165deg, ${s.c}, ${shade(s.c,-28)})`;
+    d.innerHTML = `<span class="brand">K1</span><span class="name">${s.name}</span><span class="en">${s.en}</span>`;
+    stage.appendChild(d);
+  });
+  layoutSticks();
+}
 function layoutSticks(mx = 0, my = 0){
-  document.querySelectorAll(".stick").forEach(el => {
+  stage.querySelectorAll(".stick").forEach(el => {
     const i = +el.dataset.i, off = i - mid;
     const rot = off * 11 + mx * 7;
     const tx  = off * 58 + mx * 16 * (off === 0 ? 1.4 : 1);
@@ -558,13 +667,22 @@ function layoutSticks(mx = 0, my = 0){
     el.style.zIndex = 10 - Math.abs(off);
   });
 }
-layoutSticks();
+/* 이미지가 없으면(로드 실패) CSS 스틱으로 대체 */
+heroPhoto.addEventListener("error", () => { heroPhoto.remove(); buildCssSticks(); });
+
 if (!RM) {
   stage.addEventListener("mousemove", e => {
     const r = stage.getBoundingClientRect();
-    layoutSticks((e.clientX - r.left)/r.width - .5, (e.clientY - r.top)/r.height - .5);
+    const nx = (e.clientX - r.left)/r.width - .5, ny = (e.clientY - r.top)/r.height - .5;
+    if (document.getElementById("heroPhoto")) {
+      heroPhoto.style.transform =
+        `rotateY(${nx*14}deg) rotateX(${ny*-10}deg) scale(1.04)`;
+    } else { layoutSticks(nx, ny); }
   });
-  stage.addEventListener("mouseleave", () => layoutSticks());
+  stage.addEventListener("mouseleave", () => {
+    if (document.getElementById("heroPhoto")) heroPhoto.style.transform = "";
+    else layoutSticks();
+  });
   /* 톡! bounce */
   const tok = document.getElementById("tok");
   setInterval(() => {
@@ -593,7 +711,7 @@ document.querySelectorAll("[data-count]").forEach(el => cio.observe(el));
 
 /* ---------- recipe reel ---------- */
 const VIDEOS = [
-  {t:"매콤 김치찌개", time:"2:48", v:"128만", l:"9.2만", g:["#3a1508","#e84e1b"]},
+  {t:"매콤 김치찌개", time:"2:48", v:"128만", l:"9.2만", g:["#3a1508","#e84e1b"], img:"kimchi.jpg"},
   {t:"10분 컷 불고기 덮밥", time:"2:55", v:"96만", l:"7.1만", g:["#241505","#a04000"]},
   {t:"국물 떡볶이 정석", time:"3:00", v:"211만", l:"15만", g:["#2b0b06","#c0392b"]},
   {t:"바글바글 된장찌개", time:"2:37", v:"74만", l:"5.8만", g:["#1d1a07","#b7950b"]},
@@ -607,10 +725,12 @@ VIDEOS.forEach(v => {
   c.setAttribute("role","button");
   c.setAttribute("tabindex","0");
   c.setAttribute("aria-label", v.t + " 레시피 영상");
+  const bg = v.img
+    ? `linear-gradient(180deg, rgba(0,0,0,.05) 30%, rgba(0,0,0,.55)), url("${v.img}") center 35%/cover no-repeat`
+    : `radial-gradient(240px 180px at 68% 28%, ${v.g[1]}cc, transparent 70%),
+      linear-gradient(165deg, ${v.g[1]}55, ${v.g[0]} 65%)`;
   c.innerHTML = `
-    <div class="vbg" style="background:
-      radial-gradient(240px 180px at 68% 28%, ${v.g[1]}cc, transparent 70%),
-      linear-gradient(165deg, ${v.g[1]}55, ${v.g[0]} 65%)"></div>
+    <div class="vbg" style="background:${bg}"></div>
     <div class="vplay"><i class="fa-solid fa-play"></i></div>
     <div class="vinfo">
       <span class="time">${v.time} · 3-min recipe</span>
