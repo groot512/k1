@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -120,15 +119,13 @@ nav.scrolled{border-color:var(--line)}
 .hero-note i{color:var(--k1)}
 
 /* sticks fan */
-.stage{position:relative;height:min(560px,64vw);perspective:1200px}
+.stage{position:relative;height:min(560px,64vw)}
 .stage .hero-photo{
-  position:absolute;inset:0;margin:auto;max-height:100%;width:auto;max-width:100%;
-  object-fit:contain;will-change:transform;
-  filter:drop-shadow(0 34px 44px rgba(22,19,15,.22));
-  transition:transform .25s cubic-bezier(.2,.7,.2,1);
-  animation:heroFloat 6s ease-in-out infinite;
+  position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:120%;max-width:none;height:auto;
+  mix-blend-mode:multiply; /* 흰 배경을 페이지 배경에 녹여 경계 제거 */
 }
-@keyframes heroFloat{0%,100%{translate:0 0}50%{translate:0 -12px}}
+@media (max-width:900px){.stage .hero-photo{width:108%}}
 .stick{
   position:absolute;left:50%;top:50%;width:104px;height:340px;border-radius:54px;
   transform-origin:50% 88%;
@@ -383,7 +380,6 @@ footer{border-top:1px solid var(--line);padding:3.2rem 0;background:var(--rice)}
     </div>
     <div class="stage" id="stage" aria-label="K1 스틱소스 5종 미리보기">
       <img class="hero-photo" id="heroPhoto" src="hero-sticks.jpg" alt="부채꼴로 펼쳐진 K1 스틱소스 5종 패키지">
-      <div class="stage-caption"><i class="fa-solid fa-computer-mouse"></i>마우스를 움직여 보세요</div>
     </div>
   </div>
 </header>
@@ -672,17 +668,14 @@ function layoutSticks(mx = 0, my = 0){
 heroPhoto.addEventListener("error", () => { heroPhoto.remove(); buildCssSticks(); });
 
 if (!RM) {
+  /* 패럴랙스는 CSS 폴백 스틱일 때만 동작 (실사 이미지는 무효과) */
   stage.addEventListener("mousemove", e => {
+    if (document.getElementById("heroPhoto")) return;
     const r = stage.getBoundingClientRect();
-    const nx = (e.clientX - r.left)/r.width - .5, ny = (e.clientY - r.top)/r.height - .5;
-    if (document.getElementById("heroPhoto")) {
-      heroPhoto.style.transform =
-        `rotateY(${nx*14}deg) rotateX(${ny*-10}deg) scale(1.04)`;
-    } else { layoutSticks(nx, ny); }
+    layoutSticks((e.clientX - r.left)/r.width - .5, (e.clientY - r.top)/r.height - .5);
   });
   stage.addEventListener("mouseleave", () => {
-    if (document.getElementById("heroPhoto")) heroPhoto.style.transform = "";
-    else layoutSticks();
+    if (!document.getElementById("heroPhoto")) layoutSticks();
   });
   /* 톡! bounce */
   const tok = document.getElementById("tok");
