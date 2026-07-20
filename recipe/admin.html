@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>K1 Recipe — 관리자</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="style.css">
+<style>
+/* ===== Admin-specific Styles ===== */
+.admin-gate{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:2rem}
+.admin-gate-box{background:var(--paper);border:1px solid var(--line);border-radius:var(--r-lg);padding:2.5rem;max-width:380px;width:100%;text-align:center;box-shadow:var(--shadow)}
+.admin-gate-box h2{font-size:1.4rem;margin-bottom:.3rem}
+.admin-gate-box p{color:var(--ink-60);font-size:.88rem;margin-bottom:1.5rem}
+.admin-gate-box input{width:100%;padding:.8rem 1rem;border:1.5px solid var(--line);border-radius:var(--r-md);font-size:.95rem;font-family:var(--disp);margin-bottom:1rem;text-align:center;letter-spacing:.2em}
+.admin-gate-box input:focus{border-color:var(--k1);outline:none}
+.admin-gate-box .btn-primary{width:100%}
+.admin-gate-box .error{color:#e74c3c;font-size:.82rem;margin-top:.5rem;display:none}
+
+.admin-wrap{max-width:960px;margin:0 auto;padding:84px 1.2rem 4rem}
+.admin-header{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;margin-bottom:2rem}
+.admin-header h1{font-size:1.5rem;font-weight:800}
+.admin-actions{display:flex;gap:.6rem;flex-wrap:wrap}
+
+.btn-primary{display:inline-flex;align-items:center;gap:.5rem;font-size:.85rem;font-weight:700;padding:.7rem 1.3rem;border-radius:100px;background:var(--k1);color:#fff;transition:background .25s;border:none;cursor:pointer}
+.btn-primary:hover{background:var(--k1-deep)}
+.btn-secondary{display:inline-flex;align-items:center;gap:.5rem;font-size:.85rem;font-weight:700;padding:.7rem 1.3rem;border-radius:100px;background:var(--rice);color:var(--ink);border:1.5px solid var(--line);transition:all .25s;cursor:pointer}
+.btn-secondary:hover{border-color:var(--k1);color:var(--k1)}
+.btn-danger{display:inline-flex;align-items:center;gap:.5rem;font-size:.78rem;font-weight:700;padding:.5rem 1rem;border-radius:100px;background:#fde8e8;color:#c0392b;border:none;cursor:pointer;transition:background .25s}
+.btn-danger:hover{background:#f5c6c6}
+.btn-sm{font-size:.78rem;padding:.5rem 1rem}
+
+/* Recipe list table */
+.recipe-table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:var(--r-md);overflow:hidden;margin-bottom:2rem}
+.recipe-table th,.recipe-table td{padding:.8rem 1rem;text-align:left;font-size:.88rem;border-bottom:1px solid var(--line)}
+.recipe-table th{background:var(--rice);font-weight:700;font-size:.78rem;color:var(--ink-60);letter-spacing:.05em;text-transform:uppercase}
+.recipe-table tr:last-child td{border-bottom:none}
+.recipe-table tr:hover td{background:var(--k1-light)}
+.recipe-table .thumb-cell{width:50px}
+.recipe-table .thumb-mini{width:44px;height:44px;border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:#fff;flex-shrink:0}
+.recipe-table .actions-cell{white-space:nowrap;display:flex;gap:.4rem}
+.recipe-table .source-badge{font-size:.65rem;padding:.2rem .5rem;border-radius:100px;font-weight:600}
+.source-builtin{background:#e8f5e9;color:#2e7d32}
+.source-custom{background:#e3f2fd;color:#1565c0}
+
+.empty-admin{text-align:center;padding:3rem;color:var(--ink-30)}
+.empty-admin i{font-size:2.5rem;margin-bottom:.8rem;display:block}
+
+/* Form */
+.form-section{background:var(--paper);border:1px solid var(--line);border-radius:var(--r-lg);padding:2rem;margin-bottom:2rem;box-shadow:var(--shadow)}
+.form-section h2{font-size:1.15rem;font-weight:800;margin-bottom:1.5rem;display:flex;align-items:center;gap:.5rem}
+.form-section h2 i{color:var(--k1)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem}
+.form-row.full{grid-template-columns:1fr}
+.form-row.triple{grid-template-columns:1fr 1fr 1fr}
+@media(max-width:600px){.form-row,.form-row.triple{grid-template-columns:1fr}}
+.form-group{display:flex;flex-direction:column;gap:.35rem}
+.form-group label{font-size:.82rem;font-weight:700;color:var(--ink-60)}
+.form-group input,.form-group textarea,.form-group select{padding:.7rem .9rem;border:1.5px solid var(--line);border-radius:var(--r-sm);font-size:.9rem;font-family:var(--disp);color:var(--ink);transition:border-color .25s}
+.form-group input:focus,.form-group textarea:focus,.form-group select:focus{border-color:var(--k1);outline:none}
+.form-group textarea{resize:vertical;min-height:80px}
+.form-group .hint{font-size:.72rem;color:var(--ink-30);margin-top:.2rem}
+.form-group .yt-preview{margin-top:.5rem;border-radius:var(--r-sm);overflow:hidden;aspect-ratio:16/9;background:#0a0a0a;display:none}
+.form-group .yt-preview iframe{width:100%;height:100%;border:none}
+
+/* Language tabs in form */
+.lang-tabs{display:flex;gap:.3rem;margin-bottom:1rem;border-bottom:2px solid var(--line)}
+.lang-tab{font-size:.82rem;font-weight:700;padding:.6rem 1rem;color:var(--ink-30);position:relative;cursor:pointer;border:none;background:none;transition:color .25s}
+.lang-tab::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:2px;background:var(--k1);transform:scaleX(0);transition:transform .25s}
+.lang-tab.active{color:var(--k1)}
+.lang-tab.active::after{transform:scaleX(1)}
+.lang-tab:hover{color:var(--ink)}
+.lang-panel{display:none}
+.lang-panel.active{display:block}
+
+/* Image upload */
+.img-upload-area{display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.img-preview{width:100px;height:100px;border-radius:var(--r-md);border:2px dashed var(--line);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;background:var(--rice);cursor:pointer;transition:border-color .25s}
+.img-preview:hover{border-color:var(--k1)}
+.img-preview img{width:100%;height:100%;object-fit:cover}
+.img-preview .placeholder{text-align:center;color:var(--ink-30);font-size:.72rem}
+.img-preview .placeholder i{font-size:1.5rem;display:block;margin-bottom:.3rem}
+
+/* Sauce color preview */
+.sauce-preview-row{display:flex;align-items:center;gap:.8rem}
+.sauce-color-circle{width:36px;height:36px;border-radius:50%;border:2px solid var(--line);flex-shrink:0}
+
+/* JSON section */
+.json-section{background:var(--rice);border:1px solid var(--line);border-radius:var(--r-lg);padding:1.5rem;margin-bottom:2rem}
+.json-section h3{font-size:.95rem;font-weight:700;margin-bottom:1rem;display:flex;align-items:center;gap:.4rem}
+.json-section h3 i{color:var(--k1)}
+.json-actions{display:flex;gap:.6rem;flex-wrap:wrap}
+.file-input-hidden{display:none}
+
+/* Stats row */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem;margin-bottom:2rem}
+.stat-card{background:var(--paper);border:1px solid var(--line);border-radius:var(--r-md);padding:1.2rem;text-align:center}
+.stat-card .stat-num{font-family:var(--latin);font-size:1.8rem;font-weight:700;color:var(--k1)}
+.stat-card .stat-label{font-size:.78rem;color:var(--ink-60);margin-top:.2rem}
+
+/* Toast */
+.toast{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(100px);background:var(--ink);color:#fff;padding:.8rem 1.5rem;border-radius:100px;font-size:.88rem;font-weight:600;z-index:999;transition:transform .4s cubic-bezier(.2,.7,.2,1);display:flex;align-items:center;gap:.5rem}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast i{color:var(--success)}
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav id="nav">
+  <div class="wrap nav-inner">
+    <a class="logo" href="index.html">
+      <span class="logo-k1">K1</span>
+      <span class="logo-sub">ADMIN</span>
+    </a>
+    <div class="nav-center">
+      <a href="index.html" class="nav-link"><i class="fa-solid fa-arrow-left"></i> 메인으로</a>
+    </div>
+    <div class="nav-right">
+      <button class="btn-secondary btn-sm" id="logoutBtn" style="display:none">
+        <i class="fa-solid fa-right-from-bracket"></i> 로그아웃
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Password Gate -->
+<div class="admin-gate" id="adminGate">
+  <div class="admin-gate-box">
+    <div style="font-size:2.5rem;margin-bottom:.8rem">🔐</div>
+    <h2>관리자 로그인</h2>
+    <p>K1 Recipe 관리자 페이지입니다</p>
+    <input type="password" id="pwInput" placeholder="비밀번호" autofocus>
+    <button class="btn-primary" id="pwSubmit"><i class="fa-solid fa-lock-open"></i> 접속</button>
+    <div class="error" id="pwError">비밀번호가 올바르지 않습니다</div>
+  </div>
+</div>
+
+<!-- Admin Dashboard (hidden until login) -->
+<div class="admin-wrap" id="adminMain" style="display:none">
+
+  <!-- Stats -->
+  <div class="stats-row" id="statsRow"></div>
+
+  <!-- Header -->
+  <div class="admin-header">
+    <h1><i class="fa-solid fa-utensils" style="color:var(--k1)"></i> 레시피 관리</h1>
+    <div class="admin-actions">
+      <button class="btn-primary" id="addRecipeBtn"><i class="fa-solid fa-plus"></i> 새 레시피</button>
+    </div>
+  </div>
+
+  <!-- Recipe List -->
+  <div id="recipeList"></div>
+
+  <!-- Add/Edit Form (hidden initially) -->
+  <div id="recipeForm" style="display:none">
+    <div class="form-section">
+      <h2><i class="fa-solid fa-pen-to-square"></i> <span id="formTitle">새 레시피 등록</span></h2>
+
+      <!-- YouTube -->
+      <div class="form-row full">
+        <div class="form-group">
+          <label><i class="fa-brands fa-youtube"></i> YouTube 영상 URL</label>
+          <input type="url" id="fYoutubeUrl" placeholder="https://www.youtube.com/watch?v=... 또는 youtu.be/...">
+          <div class="hint">전체 URL을 붙여넣으면 영상 ID가 자동 추출됩니다</div>
+          <div class="yt-preview" id="ytPreview"></div>
+        </div>
+      </div>
+
+      <!-- Thumbnail Image -->
+      <div class="form-row">
+        <div class="form-group">
+          <label><i class="fa-solid fa-image"></i> 썸네일 이미지</label>
+          <div class="img-upload-area">
+            <div class="img-preview" id="thumbPreview" onclick="document.getElementById('thumbInput').click()">
+              <div class="placeholder" id="thumbPlaceholder">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                클릭하여 업로드
+              </div>
+            </div>
+            <div>
+              <input type="file" accept="image/*" id="thumbInput" class="file-input-hidden">
+              <button class="btn-secondary btn-sm" onclick="document.getElementById('thumbInput').click()">
+                <i class="fa-solid fa-upload"></i> 파일 선택
+              </button>
+              <button class="btn-secondary btn-sm" id="thumbClear" style="display:none">
+                <i class="fa-solid fa-trash"></i> 삭제
+              </button>
+              <div class="hint" style="margin-top:.4rem">JPG/PNG, 최대 500KB 권장</div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label><i class="fa-solid fa-palette"></i> 또는 그라데이션 배경 (이미지 없을 때)</label>
+          <div class="form-row" style="margin-bottom:.5rem">
+            <div class="form-group">
+              <label>대표 이모지</label>
+              <input type="text" id="fEmoji" placeholder="🍲" maxlength="4">
+            </div>
+            <div class="form-group">
+              <label>배경 색상</label>
+              <div class="sauce-preview-row">
+                <input type="color" id="fThumbColor" value="#c0392b" style="width:60px;height:36px;border:none;padding:0;cursor:pointer">
+                <div class="sauce-color-circle" id="thumbColorPreview" style="background:#c0392b"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Basic Info -->
+      <div class="form-row triple">
+        <div class="form-group">
+          <label>조리 시간 (분)</label>
+          <input type="number" id="fCookTime" min="1" max="120" value="3">
+        </div>
+        <div class="form-group">
+          <label>인분</label>
+          <input type="number" id="fServings" min="1" max="20" value="2">
+        </div>
+        <div class="form-group">
+          <label>난이도</label>
+          <select id="fDifficulty">
+            <option value="easy">쉬움</option>
+            <option value="medium">보통</option>
+            <option value="hard">어려움</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Sauce Info -->
+      <div class="form-row triple">
+        <div class="form-group">
+          <label>소스 이모지</label>
+          <input type="text" id="fSauceEmoji" placeholder="🌶️" maxlength="4">
+        </div>
+        <div class="form-group">
+          <label>소스 색상</label>
+          <div class="sauce-preview-row">
+            <input type="color" id="fSauceColor" value="#c0392b" style="width:60px;height:36px;border:none;padding:0;cursor:pointer">
+            <div class="sauce-color-circle" id="sauceColorPreview" style="background:#c0392b"></div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>가격</label>
+          <input type="text" id="fPrice" placeholder="$12.99">
+        </div>
+      </div>
+
+      <!-- Amazon Link -->
+      <div class="form-row full">
+        <div class="form-group">
+          <label><i class="fa-brands fa-amazon"></i> Amazon 상품 링크</label>
+          <input type="url" id="fAmazonUrl" placeholder="https://amazon.com/dp/...">
+        </div>
+      </div>
+    </div>
+
+    <!-- Multi-language content -->
+    <div class="form-section">
+      <h2><i class="fa-solid fa-language"></i> 다국어 콘텐츠</h2>
+      <div class="lang-tabs" id="formLangTabs">
+        <button class="lang-tab active" data-lang="ko">🇰🇷 한국어</button>
+        <button class="lang-tab" data-lang="en">🇬🇧 English</button>
+        <button class="lang-tab" data-lang="ja">🇯🇵 日本語</button>
+        <button class="lang-tab" data-lang="zh">🇨🇳 中文</button>
+      </div>
+
+      <!-- Korean -->
+      <div class="lang-panel active" data-lang="ko">
+        <div class="form-row full">
+          <div class="form-group"><label>소스 이름</label><input type="text" id="fSauceName_ko" placeholder="김치찌개 베이스"></div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group"><label>레시피 제목</label><input type="text" id="fTitle_ko" placeholder="3분 완성! 매콤 김치찌개"></div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group"><label>설명</label><textarea id="fDesc_ko" rows="2" placeholder="간단한 레시피 설명..."></textarea></div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group"><label>재료 (줄 바꿈으로 구분)</label><textarea id="fIngredients_ko" rows="4" placeholder="K1 스틱 1포&#10;물 400ml&#10;두부 1/2모"></textarea></div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group"><label>조리 순서 (줄 바꿈으로 구분)</label><textarea id="fSteps_ko" rows="4" placeholder="냄비에 물을 넣고 끓입니다.&#10;스틱을 넣고 저어줍니다."></textarea></div>
+        </div>
+      </div>
+
+      <!-- English -->
+      <div class="lang-panel" data-lang="en">
+        <div class="form-row full">
+          <div class="form-group"><label>Sauce Name</label><input type="text" id="fSauceName_en" placeholder="Kimchi Stew Base"></div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group"><label>Recipe Title</label><input type="text" id="fTitle_en" placeholder="3-Min Spicy Kimchi Stew"></div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group"><label>Description</label><textarea id="fDesc_en" rows="2" placeholder="Short recipe description..."></textarea></div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group"><label>Ingredients (one per line)</label><textarea id="fIngredients_en" rows="4" placeholder="1 K1 stick&#10;400ml water&#10;1/2 block tofu"></textarea></div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group"><label>Steps (one per line)</label><textarea id="fSteps_en" rows="4" placeholder="Bring water to a boil.&#10;Add the stick and stir."></textarea></div>
+        </div>
+      </div>
+
+      <!-- Japanese -->
+      <div class="lang-panel" data-lang="ja">
+        <div class="form-row full">
+          <div class="form-group"><label>ソース名</label><input type="text" id="fSauceName_ja" placeholder="キムチチゲベース"></div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group"><label>レシピタイトル</label><input type="text" id="fTitle_ja" placeholder="3分で完成！ピリ辛キムチチゲ"></div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group"><label>説明</label><textarea id="fDesc_ja" rows="2" placeholder="簡単なレシピ説明..."></textarea></div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group"><label>材料（1行に1つ）</label><textarea id="fIngredients_ja" rows="4" placeholder="K1スティック 1本&#10;水 400ml"></textarea></div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group"><label>作り方（1行に1ステップ）</label><textarea id="fSteps_ja" rows="4" placeholder="鍋に水を入れて沸かします。"></textarea></div>
+        </div>
+      </div>
+
+      <!-- Chinese -->
+      <div class="lang-panel" data-lang="zh">
+        <div class="form-row full">
+          <div class="form-group"><label>酱料名称</label><input type="text" id="fSauceName_zh" placeholder="泡菜汤底"></div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group"><label>食谱标题</label><input type="text" id="fTitle_zh" placeholder="3分钟完成！辣味泡菜汤"></div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group"><label>描述</label><textarea id="fDesc_zh" rows="2" placeholder="简短食谱描述..."></textarea></div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group"><label>食材（每行一个）</label><textarea id="fIngredients_zh" rows="4" placeholder="K1调料棒 1包&#10;水 400ml"></textarea></div>
+        </div>
+        <div class="form-row full">
+          <div class="form-group"><label>步骤（每行一步）</label><textarea id="fSteps_zh" rows="4" placeholder="锅中加水烧开。"></textarea></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form Actions -->
+    <div style="display:flex;gap:.8rem;justify-content:flex-end;margin-bottom:2rem">
+      <button class="btn-secondary" id="formCancel"><i class="fa-solid fa-xmark"></i> 취소</button>
+      <button class="btn-primary" id="formSave"><i class="fa-solid fa-check"></i> 저장</button>
+    </div>
+  </div>
+
+  <!-- JSON Import/Export -->
+  <div class="json-section">
+    <h3><i class="fa-solid fa-database"></i> 데이터 관리</h3>
+    <div class="json-actions">
+      <button class="btn-secondary btn-sm" id="jsonExport"><i class="fa-solid fa-download"></i> JSON 내보내기</button>
+      <button class="btn-secondary btn-sm" id="jsonImportBtn"><i class="fa-solid fa-upload"></i> JSON 불러오기</button>
+      <input type="file" accept=".json" id="jsonImportFile" class="file-input-hidden">
+      <button class="btn-danger btn-sm" id="clearAllBtn"><i class="fa-solid fa-trash"></i> 커스텀 전체 삭제</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"><i class="fa-solid fa-circle-check"></i><span id="toastMsg"></span></div>
+
+<script>
+/* ===== K1 Admin Page ===== */
+const ADMIN_PW = '100512';
+const STORAGE_KEY = 'k1CustomRecipes';
+
+// ---- Password Gate ----
+const gate = document.getElementById('adminGate');
+const main = document.getElementById('adminMain');
+const pwInput = document.getElementById('pwInput');
+const pwSubmit = document.getElementById('pwSubmit');
+const pwError = document.getElementById('pwError');
+const logoutBtn = document.getElementById('logoutBtn');
+
+function checkAuth() {
+  if (sessionStorage.getItem('k1Admin') === 'true') {
+    gate.style.display = 'none';
+    main.style.display = 'block';
+    logoutBtn.style.display = 'flex';
+    renderDashboard();
+  }
+}
+
+pwSubmit.addEventListener('click', tryLogin);
+pwInput.addEventListener('keydown', e => { if (e.key === 'Enter') tryLogin(); });
+
+function tryLogin() {
+  if (pwInput.value === ADMIN_PW) {
+    sessionStorage.setItem('k1Admin', 'true');
+    pwError.style.display = 'none';
+    checkAuth();
+  } else {
+    pwError.style.display = 'block';
+    pwInput.value = '';
+    pwInput.focus();
+  }
+}
+
+logoutBtn.addEventListener('click', () => {
+  sessionStorage.removeItem('k1Admin');
+  gate.style.display = 'flex';
+  main.style.display = 'none';
+  logoutBtn.style.display = 'none';
+  pwInput.value = '';
+});
+
+checkAuth();
+
+// ---- Data ----
+function getCustomRecipes() {
+  return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+}
+function saveCustomRecipes(arr) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
+}
+
+// Built-in recipe IDs (from app.js) for reference
+const BUILTIN_IDS = ['kimchi-jjigae','bulgogi-dupbap','tteokbokki','doenjang-jjigae','janchi-guksu','vegan-juk'];
+
+// ---- Dashboard ----
+function renderDashboard() {
+  renderStats();
+  renderRecipeList();
+}
+
+function renderStats() {
+  const custom = getCustomRecipes();
+  const total = BUILTIN_IDS.length + custom.length;
+  const withImages = custom.filter(r => r.thumbImage).length;
+  document.getElementById('statsRow').innerHTML = `
+    <div class="stat-card"><div class="stat-num">${BUILTIN_IDS.length}</div><div class="stat-label">기본 레시피</div></div>
+    <div class="stat-card"><div class="stat-num">${custom.length}</div><div class="stat-label">커스텀 레시피</div></div>
+    <div class="stat-card"><div class="stat-num">${total}</div><div class="stat-label">전체</div></div>
+    <div class="stat-card"><div class="stat-num">${withImages}</div><div class="stat-label">이미지 포함</div></div>
+  `;
+}
+
+function renderRecipeList() {
+  const custom = getCustomRecipes();
+  const listEl = document.getElementById('recipeList');
+
+  if (BUILTIN_IDS.length + custom.length === 0) {
+    listEl.innerHTML = '<div class="empty-admin"><i class="fa-solid fa-inbox"></i><p>등록된 레시피가 없습니다</p></div>';
+    return;
+  }
+
+  let rows = '';
+
+  // Built-in recipes (read-only display)
+  BUILTIN_IDS.forEach(id => {
+    const name = { 'kimchi-jjigae':'김치찌개','bulgogi-dupbap':'불고기덮밥','tteokbokki':'떡볶이','doenjang-jjigae':'된장찌개','janchi-guksu':'잔치국수','vegan-juk':'비건김치죽' }[id] || id;
+    const emoji = { 'kimchi-jjigae':'🍲','bulgogi-dupbap':'🍚','tteokbokki':'🍢','doenjang-jjigae':'🥘','janchi-guksu':'🍜','vegan-juk':'🥣' }[id] || '🍽️';
+    const color = { 'kimchi-jjigae':'#c0392b','bulgogi-dupbap':'#6e2c00','tteokbokki':'#e84e1b','doenjang-jjigae':'#7d6608','janchi-guksu':'#2471a3','vegan-juk':'#1e8449' }[id] || '#888';
+    rows += `<tr>
+      <td class="thumb-cell"><div class="thumb-mini" style="background:${color}">${emoji}</div></td>
+      <td><strong>${name}</strong></td>
+      <td><span class="source-badge source-builtin">기본</span></td>
+      <td style="color:var(--ink-30);font-size:.82rem">코드에 내장됨</td>
+    </tr>`;
+  });
+
+  // Custom recipes
+  custom.forEach((r, i) => {
+    const thumb = r.thumbImage
+      ? `<img src="${r.thumbImage}" style="width:44px;height:44px;object-fit:cover;border-radius:var(--r-sm)">`
+      : `<div class="thumb-mini" style="background:${r.thumbColor || '#888'}">${r.emoji || '🍽️'}</div>`;
+    rows += `<tr>
+      <td class="thumb-cell">${thumb}</td>
+      <td><strong>${r.title?.ko || r.title?.en || '(제목 없음)'}</strong></td>
+      <td><span class="source-badge source-custom">커스텀</span></td>
+      <td class="actions-cell">
+        <button class="btn-secondary btn-sm" onclick="editRecipe(${i})"><i class="fa-solid fa-pen"></i> 수정</button>
+        <button class="btn-danger btn-sm" onclick="deleteRecipe(${i})"><i class="fa-solid fa-trash"></i></button>
+      </td>
+    </tr>`;
+  });
+
+  listEl.innerHTML = `<table class="recipe-table">
+    <thead><tr><th></th><th>레시피</th><th>유형</th><th>관리</th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table>`;
+}
+
+// ---- Form ----
+let editingIndex = -1;
+let currentThumbImage = null;
+
+document.getElementById('addRecipeBtn').addEventListener('click', () => {
+  editingIndex = -1;
+  clearForm();
+  document.getElementById('formTitle').textContent = '새 레시피 등록';
+  document.getElementById('recipeForm').style.display = 'block';
+  document.getElementById('recipeList').style.display = 'none';
+  document.getElementById('recipeForm').scrollIntoView({ behavior: 'smooth' });
+});
+
+document.getElementById('formCancel').addEventListener('click', () => {
+  document.getElementById('recipeForm').style.display = 'none';
+  document.getElementById('recipeList').style.display = 'block';
+});
+
+// Language tabs in form
+document.querySelectorAll('#formLangTabs .lang-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('#formLangTabs .lang-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    document.querySelectorAll('.lang-panel').forEach(p => p.classList.remove('active'));
+    document.querySelector(`.lang-panel[data-lang="${tab.dataset.lang}"]`).classList.add('active');
+  });
+});
+
+// YouTube URL → preview
+document.getElementById('fYoutubeUrl').addEventListener('input', function() {
+  const id = extractYouTubeId(this.value);
+  const preview = document.getElementById('ytPreview');
+  if (id) {
+    preview.style.display = 'block';
+    preview.innerHTML = `<iframe src="https://www.youtube.com/embed/${id}" allowfullscreen></iframe>`;
+  } else {
+    preview.style.display = 'none';
+    preview.innerHTML = '';
+  }
+});
+
+// Image upload
+document.getElementById('thumbInput').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  if (file.size > 1024 * 1024) {
+    showToast('⚠️ 이미지가 1MB를 초과합니다. 500KB 이하를 권장합니다.');
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    currentThumbImage = ev.target.result;
+    const preview = document.getElementById('thumbPreview');
+    preview.innerHTML = `<img src="${currentThumbImage}">`;
+    document.getElementById('thumbClear').style.display = 'inline-flex';
+  };
+  reader.readAsDataURL(file);
+});
+
+document.getElementById('thumbClear').addEventListener('click', () => {
+  currentThumbImage = null;
+  document.getElementById('thumbPreview').innerHTML = '<div class="placeholder" id="thumbPlaceholder"><i class="fa-solid fa-cloud-arrow-up"></i>클릭하여 업로드</div>';
+  document.getElementById('thumbInput').value = '';
+  document.getElementById('thumbClear').style.display = 'none';
+});
+
+// Color previews
+document.getElementById('fThumbColor').addEventListener('input', function() {
+  document.getElementById('thumbColorPreview').style.background = this.value;
+});
+document.getElementById('fSauceColor').addEventListener('input', function() {
+  document.getElementById('sauceColorPreview').style.background = this.value;
+});
+
+// Save
+document.getElementById('formSave').addEventListener('click', () => {
+  const ytUrl = document.getElementById('fYoutubeUrl').value;
+  const youtubeId = extractYouTubeId(ytUrl) || '';
+  const titleKo = document.getElementById('fTitle_ko').value.trim();
+
+  if (!titleKo) {
+    showToast('⚠️ 한국어 제목은 필수입니다');
+    return;
+  }
+
+  const recipe = {
+    id: editingIndex >= 0 ? getCustomRecipes()[editingIndex].id : 'custom-' + Date.now(),
+    youtubeId,
+    cookTime: parseInt(document.getElementById('fCookTime').value) || 3,
+    servings: parseInt(document.getElementById('fServings').value) || 2,
+    difficulty: document.getElementById('fDifficulty').value,
+    thumbImage: currentThumbImage || null,
+    thumbColor: document.getElementById('fThumbColor').value,
+    emoji: document.getElementById('fEmoji').value || '🍽️',
+    sauce: {
+      color: document.getElementById('fSauceColor').value,
+      emoji: document.getElementById('fSauceEmoji').value || '🍳'
+    },
+    sauceName: getLangValues('fSauceName'),
+    product: {
+      price: document.getElementById('fPrice').value || '$12.99',
+      amazonUrl: document.getElementById('fAmazonUrl').value || 'https://amazon.com'
+    },
+    title: getLangValues('fTitle'),
+    desc: getLangValues('fDesc'),
+    ingredients: getLangTextareaValues('fIngredients'),
+    steps: getLangTextareaValues('fSteps'),
+    likes: 0, views: 0, comments: [],
+    createdAt: editingIndex >= 0 ? getCustomRecipes()[editingIndex].createdAt : new Date().toISOString()
+  };
+
+  const customs = getCustomRecipes();
+  if (editingIndex >= 0) {
+    customs[editingIndex] = recipe;
+    showToast('✅ 레시피가 수정되었습니다');
+  } else {
+    customs.push(recipe);
+    showToast('✅ 새 레시피가 등록되었습니다');
+  }
+  saveCustomRecipes(customs);
+
+  document.getElementById('recipeForm').style.display = 'none';
+  document.getElementById('recipeList').style.display = 'block';
+  renderDashboard();
+});
+
+function getLangValues(prefix) {
+  const obj = {};
+  ['ko','en','ja','zh'].forEach(lang => {
+    const el = document.getElementById(`${prefix}_${lang}`);
+    if (el) obj[lang] = el.value.trim();
+  });
+  return obj;
+}
+
+function getLangTextareaValues(prefix) {
+  const obj = {};
+  ['ko','en','ja','zh'].forEach(lang => {
+    const el = document.getElementById(`${prefix}_${lang}`);
+    if (el) obj[lang] = el.value.trim().split('\n').filter(s => s.trim());
+  });
+  return obj;
+}
+
+function clearForm() {
+  currentThumbImage = null;
+  document.getElementById('fYoutubeUrl').value = '';
+  document.getElementById('ytPreview').style.display = 'none';
+  document.getElementById('thumbPreview').innerHTML = '<div class="placeholder"><i class="fa-solid fa-cloud-arrow-up"></i>클릭하여 업로드</div>';
+  document.getElementById('thumbInput').value = '';
+  document.getElementById('thumbClear').style.display = 'none';
+  document.getElementById('fEmoji').value = '🍲';
+  document.getElementById('fThumbColor').value = '#c0392b';
+  document.getElementById('thumbColorPreview').style.background = '#c0392b';
+  document.getElementById('fCookTime').value = 3;
+  document.getElementById('fServings').value = 2;
+  document.getElementById('fDifficulty').value = 'easy';
+  document.getElementById('fSauceEmoji').value = '🌶️';
+  document.getElementById('fSauceColor').value = '#c0392b';
+  document.getElementById('sauceColorPreview').style.background = '#c0392b';
+  document.getElementById('fPrice').value = '$12.99';
+  document.getElementById('fAmazonUrl').value = '';
+  ['ko','en','ja','zh'].forEach(lang => {
+    ['fSauceName','fTitle','fDesc','fIngredients','fSteps'].forEach(f => {
+      const el = document.getElementById(`${f}_${lang}`);
+      if (el) el.value = '';
+    });
+  });
+  // Reset to Korean tab
+  document.querySelectorAll('#formLangTabs .lang-tab').forEach(t => t.classList.remove('active'));
+  document.querySelector('#formLangTabs .lang-tab[data-lang="ko"]').classList.add('active');
+  document.querySelectorAll('.lang-panel').forEach(p => p.classList.remove('active'));
+  document.querySelector('.lang-panel[data-lang="ko"]').classList.add('active');
+}
+
+// Edit
+window.editRecipe = function(index) {
+  const customs = getCustomRecipes();
+  const r = customs[index];
+  if (!r) return;
+
+  editingIndex = index;
+  clearForm();
+  document.getElementById('formTitle').textContent = '레시피 수정';
+
+  // Fill form
+  if (r.youtubeId) {
+    document.getElementById('fYoutubeUrl').value = `https://www.youtube.com/watch?v=${r.youtubeId}`;
+    const preview = document.getElementById('ytPreview');
+    preview.style.display = 'block';
+    preview.innerHTML = `<iframe src="https://www.youtube.com/embed/${r.youtubeId}" allowfullscreen></iframe>`;
+  }
+  if (r.thumbImage) {
+    currentThumbImage = r.thumbImage;
+    document.getElementById('thumbPreview').innerHTML = `<img src="${r.thumbImage}">`;
+    document.getElementById('thumbClear').style.display = 'inline-flex';
+  }
+  document.getElementById('fEmoji').value = r.emoji || '🍲';
+  document.getElementById('fThumbColor').value = r.thumbColor || '#c0392b';
+  document.getElementById('thumbColorPreview').style.background = r.thumbColor || '#c0392b';
+  document.getElementById('fCookTime').value = r.cookTime || 3;
+  document.getElementById('fServings').value = r.servings || 2;
+  document.getElementById('fDifficulty').value = r.difficulty || 'easy';
+  document.getElementById('fSauceEmoji').value = r.sauce?.emoji || '🌶️';
+  document.getElementById('fSauceColor').value = r.sauce?.color || '#c0392b';
+  document.getElementById('sauceColorPreview').style.background = r.sauce?.color || '#c0392b';
+  document.getElementById('fPrice').value = r.product?.price || '$12.99';
+  document.getElementById('fAmazonUrl').value = r.product?.amazonUrl || '';
+
+  ['ko','en','ja','zh'].forEach(lang => {
+    const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
+    setVal(`fSauceName_${lang}`, r.sauceName?.[lang]);
+    setVal(`fTitle_${lang}`, r.title?.[lang]);
+    setVal(`fDesc_${lang}`, r.desc?.[lang]);
+    setVal(`fIngredients_${lang}`, (r.ingredients?.[lang] || []).join('\n'));
+    setVal(`fSteps_${lang}`, (r.steps?.[lang] || []).join('\n'));
+  });
+
+  document.getElementById('recipeForm').style.display = 'block';
+  document.getElementById('recipeList').style.display = 'none';
+  document.getElementById('recipeForm').scrollIntoView({ behavior: 'smooth' });
+};
+
+// Delete
+window.deleteRecipe = function(index) {
+  if (!confirm('이 레시피를 삭제하시겠습니까?')) return;
+  const customs = getCustomRecipes();
+  customs.splice(index, 1);
+  saveCustomRecipes(customs);
+  renderDashboard();
+  showToast('🗑️ 레시피가 삭제되었습니다');
+};
+
+// ---- JSON Export/Import ----
+document.getElementById('jsonExport').addEventListener('click', () => {
+  const data = getCustomRecipes();
+  if (data.length === 0) { showToast('⚠️ 내보낼 커스텀 레시피가 없습니다'); return; }
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `k1-recipes-${new Date().toISOString().slice(0,10)}.json`;
+  a.click(); URL.revokeObjectURL(url);
+  showToast(`📦 ${data.length}개 레시피를 내보냈습니다`);
+});
+
+document.getElementById('jsonImportBtn').addEventListener('click', () => {
+  document.getElementById('jsonImportFile').click();
+});
+
+document.getElementById('jsonImportFile').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    try {
+      const imported = JSON.parse(ev.target.result);
+      if (!Array.isArray(imported)) throw new Error('배열 형식이 아닙니다');
+      const customs = getCustomRecipes();
+      let added = 0;
+      imported.forEach(r => {
+        if (!customs.find(c => c.id === r.id)) {
+          customs.push(r);
+          added++;
+        }
+      });
+      saveCustomRecipes(customs);
+      renderDashboard();
+      showToast(`📥 ${added}개 레시피를 불러왔습니다 (중복 제외)`);
+    } catch (err) {
+      showToast('❌ JSON 파일을 읽을 수 없습니다: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+  this.value = '';
+});
+
+document.getElementById('clearAllBtn').addEventListener('click', () => {
+  const customs = getCustomRecipes();
+  if (customs.length === 0) { showToast('삭제할 커스텀 레시피가 없습니다'); return; }
+  if (!confirm(`커스텀 레시피 ${customs.length}개를 모두 삭제하시겠습니까?\n(기본 내장 레시피는 유지됩니다)`)) return;
+  saveCustomRecipes([]);
+  renderDashboard();
+  showToast('🗑️ 커스텀 레시피가 모두 삭제되었습니다');
+});
+
+// ---- Utilities ----
+function extractYouTubeId(url) {
+  if (!url) return null;
+  const patterns = [
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/,
+    /^([a-zA-Z0-9_-]{11})$/
+  ];
+  for (const p of patterns) {
+    const m = url.match(p);
+    if (m) return m[1];
+  }
+  return null;
+}
+
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 3000);
+}
+
+// Nav scroll
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 10);
+}, { passive: true });
+</script>
+</body>
+</html>

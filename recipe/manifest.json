@@ -1,0 +1,28 @@
+{
+  "name": "K1 Recipe — 글로벌 K-Food 레시피",
+  "short_name": "K1 Recipe",
+  "description": "K1 스틱소스와 함께하는 글로벌 K-Food 레시피 플랫폼",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#e84e1b",
+  "orientation": "portrait-primary",
+  "scope": "./",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["food", "lifestyle"],
+  "lang": "ko",
+  "dir": "ltr"
+}

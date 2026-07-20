@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>K1 Recipe — 세계의 K-Food 레시피 커뮤니티</title>
+<meta name="description" content="K1 스틱소스와 함께하는 글로벌 K-Food 레시피 플랫폼. 유튜브 레시피 영상, 다국어 지원, 커뮤니티.">
+
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#e84e1b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="K1 Recipe">
+<link rel="apple-touch-icon" href="icon-192.png">
+
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- Navigation -->
+<nav id="nav">
+  <div class="wrap nav-inner">
+    <a class="logo" href="#/">
+      <span class="logo-k1">K1</span>
+      <span class="logo-sub">RECIPE</span>
+    </a>
+    <div class="nav-center">
+      <a href="#/" class="nav-link" data-i18n="nav.home">홈</a>
+      <a href="https://groot512.github.io/k1/" target="_blank" class="nav-link" data-i18n="nav.store">스토어</a>
+      <a href="admin.html" class="nav-link nav-admin"><i class="fa-solid fa-gear"></i></a>
+    </div>
+    <div class="nav-right">
+      <div class="lang-selector" id="langSelector">
+        <button class="lang-btn" id="langBtn">
+          <span class="lang-flag" id="langFlag">🇰🇷</span>
+          <span class="lang-name" id="langName">한국어</span>
+          <i class="fa-solid fa-chevron-down lang-arrow"></i>
+        </button>
+        <div class="lang-dropdown" id="langDropdown">
+          <button data-lang="ko"><span>🇰🇷</span> 한국어</button>
+          <button data-lang="en"><span>🇬🇧</span> English</button>
+          <button data-lang="ja"><span>🇯🇵</span> 日本語</button>
+          <button data-lang="zh"><span>🇨🇳</span> 中文</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Main App Container (SPA renders here) -->
+<main id="app"></main>
+
+<!-- Mobile Bottom Tab Bar -->
+<div class="mobile-tabbar" id="mobileTabbar">
+  <a href="#/" class="tab-item active" data-tab="home">
+    <i class="fa-solid fa-house"></i>
+    <span data-i18n="nav.home">홈</span>
+  </a>
+  <a href="https://groot512.github.io/k1/" target="_blank" class="tab-item" data-tab="store">
+    <i class="fa-solid fa-store"></i>
+    <span data-i18n="nav.store">스토어</span>
+  </a>
+  <a href="admin.html" class="tab-item" data-tab="admin">
+    <i class="fa-solid fa-gear"></i>
+    <span>관리</span>
+  </a>
+</div>
+
+<!-- Footer -->
+<footer id="footer">
+  <div class="wrap">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <a class="logo" href="#/">
+          <span class="logo-k1">K1</span>
+          <span class="logo-sub">RECIPE</span>
+        </a>
+        <p class="footer-desc" data-i18n="footer.desc">K1 스틱소스로 세계 어디서나 한국의 맛을 경험하세요.</p>
+      </div>
+      <div class="footer-social">
+        <a href="#"><i class="fa-brands fa-youtube"></i></a>
+        <a href="#"><i class="fa-brands fa-instagram"></i></a>
+        <a href="#"><i class="fa-brands fa-tiktok"></i></a>
+      </div>
+    </div>
+    <div class="footer-copy" data-i18n="footer.rights">© 2026 바이트랩스(Bitelabs). All rights reserved.</div>
+  </div>
+</footer>
+
+<!-- PWA Install Banner -->
+<div class="pwa-install-banner" id="pwaInstall" style="display:none">
+  <div class="pwa-install-content">
+    <img src="icon-192.png" alt="K1" class="pwa-icon">
+    <div class="pwa-text">
+      <strong>K1 Recipe</strong>
+      <span>홈 화면에 추가하기</span>
+    </div>
+    <button class="pwa-install-btn" id="pwaInstallBtn">설치</button>
+    <button class="pwa-dismiss" id="pwaDismiss"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+</div>
+
+<script src="app.js"></script>
+<script>
+// PWA Service Worker Registration
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js')
+      .then(reg => console.log('SW registered:', reg.scope))
+      .catch(err => console.log('SW registration failed:', err));
+  });
+}
+
+// PWA Install Prompt
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  const banner = document.getElementById('pwaInstall');
+  if (banner) banner.style.display = 'flex';
+});
+
+const installBtn = document.getElementById('pwaInstallBtn');
+if (installBtn) {
+  installBtn.addEventListener('click', async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const result = await deferredPrompt.userChoice;
+    console.log('Install result:', result.outcome);
+    deferredPrompt = null;
+    document.getElementById('pwaInstall').style.display = 'none';
+  });
+}
+
+const dismissBtn = document.getElementById('pwaDismiss');
+if (dismissBtn) {
+  dismissBtn.addEventListener('click', () => {
+    document.getElementById('pwaInstall').style.display = 'none';
+  });
+}
+</script>
+</body>
+</html>
