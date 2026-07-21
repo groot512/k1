@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>유튜브 레시피 추출기 — K1 Recipe</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+:root {
+  --ink:#16130f; --ink-60:rgba(22,19,15,.62); --ink-30:rgba(22,19,15,.3);
+  --paper:#ffffff; --rice:#faf6f0;
+  --k1:#e84e1b; --k1-deep:#b93a10; --k1-bg:#fff5f0;
+  --line:rgba(22,19,15,.09);
+  --disp:"Pretendard Variable",Pretendard,-apple-system,sans-serif;
+  --latin:"Space Grotesk",var(--disp);
+  --r-lg:28px; --r-md:18px; --r-sm:12px;
+  --shadow:0 2px 12px rgba(0,0,0,.08);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--disp);color:var(--ink);background:var(--rice);line-height:1.6;min-height:100vh}
+a{color:inherit;text-decoration:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+.wrap{width:min(1160px,92%);margin:0 auto}
+
+/* ===== NAV ===== */
+nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.85);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:64px}
+.logo{display:flex;align-items:baseline;gap:.55rem}
+.logo .k1{font-family:var(--latin);font-weight:700;font-size:1.35rem;color:var(--k1)}
+.logo .by{font-size:.72rem;font-weight:600;letter-spacing:.08em;color:var(--ink-60)}
+.nav-links{display:flex;gap:1.6rem;font-size:.88rem;font-weight:600}
+.nav-links a{color:var(--ink-60);padding:.3rem 0;transition:color .25s}
+.nav-links a:hover,.nav-links a.active{color:var(--k1)}
+@media(max-width:640px){.nav-links{gap:.8rem;font-size:.8rem}.logo .by{display:none}}
+
+/* ===== HERO ===== */
+.hero{text-align:center;padding:56px 24px 32px}
+.yt-icon{width:100px;height:70px;margin:0 auto 20px;background:#ff0000;border-radius:18px;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 28px rgba(255,0,0,.18)}
+.yt-icon::after{content:'';border-left:24px solid #fff;border-top:14px solid transparent;border-bottom:14px solid transparent;margin-left:3px}
+.hero h1{font-size:clamp(1.6rem,4vw,2.2rem);font-weight:800;margin-bottom:6px}
+.hero h1 .badge{display:inline-block;background:var(--k1-bg);color:var(--k1);font-size:.75rem;padding:2px 10px;border-radius:20px;vertical-align:middle;margin-left:6px;font-weight:600}
+.hero p{color:var(--ink-60);font-size:.95rem;max-width:440px;margin:0 auto}
+.hero p strong{color:var(--k1)}
+
+/* ===== INPUT BAR ===== */
+.input-section{max-width:640px;margin:0 auto 40px;padding:0 24px}
+.input-bar{display:flex;align-items:center;background:#fff;border:2px solid var(--line);border-radius:60px;padding:5px 5px 5px 20px;box-shadow:var(--shadow);transition:border-color .3s}
+.input-bar:focus-within{border-color:var(--k1)}
+.input-bar .icon{font-size:18px;color:var(--ink-30);margin-right:10px}
+.input-bar input{flex:1;border:none;outline:none;font-size:15px;background:transparent;min-width:0}
+.input-bar input::placeholder{color:var(--ink-30)}
+.input-bar button{background:var(--k1);color:#fff;border-radius:50px;padding:11px 24px;font-size:14px;font-weight:700;transition:background .2s;white-space:nowrap}
+.input-bar button:hover{background:var(--k1-deep)}
+.input-bar button:disabled{background:#ccc;cursor:not-allowed}
+
+/* ===== LOADING / ERROR ===== */
+.loading{display:none;text-align:center;padding:48px 24px}
+.loading.active{display:block}
+.spinner{width:44px;height:44px;border:4px solid var(--line);border-top-color:var(--k1);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 14px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading p{color:var(--ink-60);font-size:14px}
+.error-msg{display:none;max-width:640px;margin:0 auto 24px;padding:14px 20px;background:#fef2f2;border:1px solid #fecaca;border-radius:12px;color:#dc2626;font-size:13px}
+.error-msg.active{display:block}
+
+/* ===== RESULT ===== */
+.result{display:none;max-width:840px;margin:0 auto;padding:0 24px 60px}
+.result.active{display:block}
+.video-section{background:#fff;border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow);margin-bottom:20px}
+.video-embed{position:relative;padding-bottom:56.25%;height:0;background:#000}
+.video-embed iframe{position:absolute;top:0;left:0;width:100%;height:100%;border:none}
+.video-meta{padding:18px 22px}
+.video-meta .rating{color:#f59e0b;font-size:16px;margin-bottom:6px}
+.video-meta h2{font-size:clamp(1.1rem,3vw,1.5rem);font-weight:800;margin-bottom:2px}
+.video-meta .channel{color:var(--ink-60);font-size:13px;margin-bottom:10px}
+.meta-pills{display:flex;gap:14px;flex-wrap:wrap}
+.pill{display:flex;align-items:center;gap:5px;font-size:13px;color:var(--ink-60)}
+
+/* TABS */
+.tabs{display:flex;border-bottom:2px solid var(--line);margin-bottom:20px;background:#fff;border-radius:var(--r-lg) var(--r-lg) 0 0;overflow-x:auto}
+.tabs button{flex:1;padding:14px 18px;border:none;background:transparent;font-size:14px;font-weight:600;color:var(--ink-30);border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap}
+.tabs button.active{color:var(--k1);border-bottom-color:var(--k1)}
+.tab-content{display:none}.tab-content.active{display:block}
+
+/* INGREDIENTS */
+.ingredients-card{background:#fff;border-radius:var(--r-lg);box-shadow:var(--shadow);overflow:hidden}
+.card-header{padding:18px 22px 10px;font-size:16px;font-weight:700;display:flex;align-items:center;gap:8px}
+.ingredient-table{width:100%;border-collapse:collapse}
+.ingredient-table tr{border-bottom:1px solid #f0f0f0}
+.ingredient-table tr:last-child{border:none}
+.ingredient-table td{padding:12px 22px;font-size:14px}
+.ingredient-table td:first-child{font-weight:500}
+.ingredient-table td:last-child{text-align:right;color:var(--ink-60);font-weight:500}
+.ingredient-table tr:nth-child(even){background:#fafafa}
+
+/* STEPS */
+.steps-list{display:flex;flex-direction:column;gap:14px}
+.step-card{background:#fff;border-radius:var(--r-lg);box-shadow:var(--shadow);overflow:hidden;transition:transform .2s}
+.step-card:hover{transform:translateY(-2px)}
+.step-header{display:flex;align-items:center;justify-content:space-between;padding:14px 22px;background:#fafafa;border-bottom:1px solid #f0f0f0}
+.step-badge{display:flex;align-items:center;gap:8px}
+.step-number{background:var(--k1);color:#fff;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700}
+.step-counter{font-size:13px;color:var(--ink-60);font-weight:600}
+.step-timestamp{background:var(--k1-bg);color:var(--k1);padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:none;transition:background .2s}
+.step-timestamp:hover{background:var(--k1);color:#fff}
+.step-body{padding:14px 22px}
+.step-title{font-size:15px;font-weight:700;margin-bottom:4px}
+.step-desc{font-size:13px;color:var(--ink-60);line-height:1.7}
+
+/* TIPS */
+.tips-card{background:#fffbeb;border:1px solid #fde68a;border-radius:var(--r-lg);padding:18px 22px}
+.tips-card h3{font-size:15px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.tips-card ul{list-style:none;display:flex;flex-direction:column;gap:7px}
+.tips-card li{padding-left:20px;position:relative;font-size:13px;color:var(--ink-60)}
+.tips-card li::before{content:'💡';position:absolute;left:0}
+
+/* EXPORT */
+.export-section{margin-top:20px;text-align:center;display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.export-btn{display:inline-flex;align-items:center;gap:6px;padding:10px 22px;border:2px solid var(--line);border-radius:12px;background:#fff;font-size:13px;font-weight:600;transition:all .2s}
+.export-btn:hover{border-color:var(--k1);color:var(--k1)}
+
+/* FOOTER */
+footer{background:var(--ink);color:rgba(255,255,255,.5);text-align:center;padding:28px 24px;font-size:.76rem;margin-top:40px}
+footer a{color:var(--k1);font-weight:600}
+</style>
+</head>
+<body>
+
+<!-- NAV — K1 통합 메뉴 -->
+<nav>
+  <div class="wrap nav-in">
+    <a class="logo" href="../">
+      <span class="k1">K1</span><span class="by">STICK SAUCE</span>
+    </a>
+    <div class="nav-links">
+      <a href="../">스토어</a>
+      <a href="../recipe/">레시피</a>
+      <a href="./" class="active">유튜브 추출</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO + INPUT -->
+<section class="hero">
+  <div class="yt-icon"></div>
+  <h1>유튜브 레시피 가져오기 <span class="badge">Beta</span></h1>
+  <p>링크만 붙여넣으면 유튜브 레시피 추출이 자동으로 끝나요.<br><strong>영상과 레시피를 한눈에</strong> 보며 더 편하게 요리하세요.</p>
+</section>
+
+<section class="input-section">
+  <div class="input-bar">
+    <span class="icon"><i class="fa-solid fa-magnifying-glass"></i></span>
+    <input type="text" id="urlInput" placeholder="유튜브 링크를 붙여넣으세요" autocomplete="off">
+    <button id="extractBtn" onclick="startExtract()">추출하기</button>
+  </div>
+</section>
+
+<div class="error-msg" id="errorMsg"></div>
+
+<div class="loading" id="loading">
+  <div class="spinner"></div>
+  <p id="loadingText">레시피를 분석하고 있어요...</p>
+  <p style="color:var(--ink-30);font-size:12px;margin-top:6px" id="loadingStep">자막을 가져오는 중</p>
+</div>
+
+<!-- RESULT -->
+<div class="result" id="result">
+  <div class="video-section">
+    <div class="video-embed">
+      <iframe id="ytPlayer" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+    <div class="video-meta">
+      <div class="rating" id="ratingStars">★★★★★</div>
+      <h2 id="recipeTitle">-</h2>
+      <div class="channel" id="channelName">-</div>
+      <div class="meta-pills">
+        <div class="pill"><i class="fa-regular fa-clock"></i> <span id="metaCookTime">-</span></div>
+        <div class="pill"><i class="fa-solid fa-users"></i> <span id="metaServings">-</span></div>
+        <div class="pill"><i class="fa-solid fa-chart-simple"></i> <span id="metaDifficulty">-</span></div>
+        <div class="pill"><i class="fa-solid fa-closed-captioning"></i> 자막 <span id="metaTranscript">-</span>줄</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="active" onclick="switchTab('ingredients')">🥬 재료</button>
+    <button onclick="switchTab('steps')">👨‍🍳 조리순서</button>
+    <button onclick="switchTab('tips')">💡 팁</button>
+  </div>
+
+  <div class="tab-content active" id="tab-ingredients">
+    <div class="ingredients-card">
+      <div class="card-header">🥬 재료 <span id="ingredientCount" style="color:var(--ink-30);font-size:13px;font-weight:400"></span></div>
+      <table class="ingredient-table" id="ingredientTable"><tbody></tbody></table>
+    </div>
+  </div>
+  <div class="tab-content" id="tab-steps">
+    <div class="steps-list" id="stepsList"></div>
+  </div>
+  <div class="tab-content" id="tab-tips">
+    <div class="tips-card" id="tipsCard">
+      <h3>💡 요리 팁</h3>
+      <ul id="tipsList"></ul>
+    </div>
+  </div>
+
+  <div class="export-section">
+    <button class="export-btn" onclick="exportJSON()"><i class="fa-regular fa-clipboard"></i> JSON 복사</button>
+    <button class="export-btn" onclick="downloadJSON()"><i class="fa-solid fa-download"></i> JSON 다운로드</button>
+  </div>
+</div>
+
+<footer>
+  <div class="wrap">© 2026 바이트랩스(Bitelabs) · <a href="../">K1 Stick Sauce</a> · <a href="../recipe/">레시피</a></div>
+</footer>
+
+<script>
+// ========== CONFIG ==========
+// Render 배포 후 이 URL을 실제 서버 주소로 교체
+const API_URL = 'http://localhost:5000';
+
+let currentData = null;
+
+function tsToSeconds(ts) {
+  const p = ts.split(':').map(Number);
+  return p.length === 3 ? p[0]*3600+p[1]*60+p[2] : p[0]*60+(p[1]||0);
+}
+
+function switchTab(name) {
+  document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelector('#tab-'+name).classList.add('active');
+  const btns = document.querySelectorAll('.tabs button');
+  ({ingredients:0,steps:1,tips:2})[name] !== undefined && btns[({ingredients:0,steps:1,tips:2})[name]].classList.add('active');
+}
+
+function seekTo(ts) {
+  const s = tsToSeconds(ts);
+  const iframe = document.getElementById('ytPlayer');
+  if (currentData) iframe.src = 'https://www.youtube.com/embed/'+currentData.videoId+'?start='+s+'&autoplay=1';
+  document.querySelector('.video-section').scrollIntoView({behavior:'smooth'});
+}
+
+async function startExtract() {
+  const url = document.getElementById('urlInput').value.trim();
+  if (!url) { showError('유튜브 링크를 입력해주세요!'); return; }
+  hideError();
+  document.getElementById('result').classList.remove('active');
+  document.getElementById('loading').classList.add('active');
+  document.getElementById('extractBtn').disabled = true;
+
+  const steps = ['영상 정보를 가져오는 중...','자막을 추출하는 중...','AI가 레시피를 분석하는 중... (10~20초)','결과를 정리하는 중...'];
+  let si = 0;
+  const timer = setInterval(() => { si = Math.min(si+1,steps.length-1); document.getElementById('loadingStep').textContent = steps[si]; }, 4000);
+
+  try {
+    const resp = await fetch(API_URL+'/api/extract', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({url}),
+    });
+    const data = await resp.json();
+    clearInterval(timer);
+    if (!resp.ok || data.error) throw new Error(data.error || '알 수 없는 오류');
+    currentData = data;
+    renderResult(data);
+  } catch(err) {
+    clearInterval(timer);
+    if (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')) {
+      showError('서버에 연결할 수 없습니다. 추출 서버가 실행 중인지 확인해주세요. (현재: '+API_URL+')');
+    } else { showError(err.message); }
+  } finally {
+    document.getElementById('loading').classList.remove('active');
+    document.getElementById('extractBtn').disabled = false;
+  }
+}
+
+function showError(msg) { const el=document.getElementById('errorMsg'); el.textContent='❌ '+msg; el.classList.add('active'); }
+function hideError() { document.getElementById('errorMsg').classList.remove('active'); }
+function difficultyKo(d) { return {easy:'쉬움 ⭐',medium:'보통 ⭐⭐',hard:'어려움 ⭐⭐⭐'}[d]||d; }
+
+function renderResult(data) {
+  const {videoId,videoInfo,recipe,transcriptLength} = data;
+  document.getElementById('ytPlayer').src = 'https://www.youtube.com/embed/'+videoId+'?enablejsapi=1';
+  document.getElementById('recipeTitle').textContent = recipe.title||videoInfo.title;
+  document.getElementById('channelName').textContent = videoInfo.channel ? '📺 '+videoInfo.channel : '';
+  document.getElementById('metaCookTime').textContent = recipe.cookTime||'-';
+  document.getElementById('metaServings').textContent = recipe.servings||'-';
+  document.getElementById('metaDifficulty').textContent = difficultyKo(recipe.difficulty);
+  document.getElementById('metaTranscript').textContent = transcriptLength;
+
+  const tbody = document.querySelector('#ingredientTable tbody');
+  tbody.innerHTML = '';
+  const ings = recipe.ingredients||[];
+  document.getElementById('ingredientCount').textContent = '('+ings.length+'가지)';
+  ings.forEach(i => { const tr=document.createElement('tr'); tr.innerHTML='<td>'+i.name+'</td><td>'+(i.amount||'')+'</td>'; tbody.appendChild(tr); });
+
+  const stepsList = document.getElementById('stepsList');
+  stepsList.innerHTML = '';
+  (recipe.steps||[]).forEach((s,i,arr) => {
+    const c=document.createElement('div'); c.className='step-card';
+    c.innerHTML='<div class="step-header"><div class="step-badge"><div class="step-number">'+(s.step||i+1)+'</div><span class="step-counter">Step '+(s.step||i+1)+'/'+arr.length+'</span></div>'+(s.timestamp?'<button class="step-timestamp" onclick="seekTo(\''+s.timestamp+'\')">'+s.timestamp+'</button>':'')+'</div><div class="step-body"><div class="step-title">'+(s.title||'')+'</div><div class="step-desc">'+(s.description||'')+'</div></div>';
+    stepsList.appendChild(c);
+  });
+
+  const tipsList = document.getElementById('tipsList');
+  tipsList.innerHTML = '';
+  const tips = recipe.tips||[];
+  if (!tips.length) tipsList.innerHTML='<li>이 영상에서는 별도의 팁이 언급되지 않았어요.</li>';
+  else tips.forEach(t => { const li=document.createElement('li'); li.textContent=t; tipsList.appendChild(li); });
+
+  document.getElementById('result').classList.add('active');
+  switchTab('ingredients');
+  document.querySelector('.video-section').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function exportJSON() {
+  if(!currentData) return;
+  navigator.clipboard.writeText(JSON.stringify(currentData,null,2)).then(()=>alert('📋 JSON이 클립보드에 복사되었습니다!')).catch(()=>alert('복사 실패 — 브라우저 권한을 확인하세요'));
+}
+function downloadJSON() {
+  if(!currentData) return;
+  const b=new Blob([JSON.stringify(currentData,null,2)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='recipe_'+currentData.videoId+'.json'; a.click();
+}
+
+document.getElementById('urlInput').addEventListener('keydown', e => { if(e.key==='Enter') startExtract(); });
+</script>
+</body>
+</html>
