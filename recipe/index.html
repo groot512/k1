@@ -33,7 +33,7 @@
       <a href="#/" class="nav-link" data-i18n="nav.home">홈</a>
       <a href="../" class="nav-link" data-i18n="nav.store">K1 스토리</a>
       <a href="../youtube/" class="nav-link" style="color:#e84e1b;font-weight:700">🎬 유튜브 레시피</a>
-      <a href="admin.html" class="nav-link nav-admin"><i class="fa-solid fa-gear"></i></a>
+      <a href="admin.html" class="nav-link nav-admin" data-i18n-aria="nav.admin" aria-label="관리"><i class="fa-solid fa-gear"></i></a>
     </div>
     <div class="nav-right">
       <div class="lang-selector" id="langSelector">
@@ -68,7 +68,7 @@
   </a>
   <a href="admin.html" class="tab-item" data-tab="admin">
     <i class="fa-solid fa-gear"></i>
-    <span>관리</span>
+    <span data-i18n="nav.admin">관리</span>
   </a>
 </div>
 
@@ -99,10 +99,10 @@
     <img src="icon-192.png" alt="K1" class="pwa-icon">
     <div class="pwa-text">
       <strong>K1 Recipe</strong>
-      <span>홈 화면에 추가하기</span>
+      <span data-i18n="pwa.add">홈 화면에 추가하기</span>
     </div>
-    <button class="pwa-install-btn" id="pwaInstallBtn">설치</button>
-    <button class="pwa-dismiss" id="pwaDismiss"><i class="fa-solid fa-xmark"></i></button>
+    <button class="pwa-install-btn" id="pwaInstallBtn" data-i18n="pwa.install">설치</button>
+    <button class="pwa-dismiss" id="pwaDismiss" data-i18n-aria="popup.close" aria-label="닫기"><i class="fa-solid fa-xmark"></i></button>
   </div>
 </div>
 

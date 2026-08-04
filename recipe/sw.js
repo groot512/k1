@@ -1,10 +1,12 @@
 /* K1 Recipe Platform — Service Worker (PWA) */
-const CACHE_NAME = 'k1-recipe-v1';
+const CACHE_NAME = 'k1-recipe-v2';
 const ASSETS = [
   './',
   './index.html',
   './style.css',
   './app.js',
+  './admin.html',
+  './admin-i18n.js',
   './manifest.json',
   './icon-192.png',
   './icon-512.png'

@@ -96,7 +96,18 @@ nav.scrolled{border-color:var(--line)}
   transition:background .25s,transform .25s;
 }
 .nav-cta:hover{background:var(--k1)}
-@media (max-width:760px){.nav-links{display:none}}
+.nav-actions{display:flex;align-items:center;gap:.65rem}
+.lang-selector{position:relative}
+.lang-button{display:flex;align-items:center;gap:.4rem;padding:.52rem .7rem;border:1px solid var(--line);border-radius:100px;background:#fff;font-size:.82rem;font-weight:700;color:var(--ink-60)}
+.lang-button:hover{border-color:var(--k1);color:var(--ink)}
+.lang-menu{position:absolute;right:0;top:calc(100% + .55rem);min-width:145px;padding:.4rem;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);opacity:0;visibility:hidden;transform:translateY(-6px);transition:.2s}
+.lang-selector.open .lang-menu{opacity:1;visibility:visible;transform:none}
+.lang-menu button{display:flex;width:100%;align-items:center;gap:.55rem;padding:.6rem .7rem;border-radius:9px;font-size:.85rem;color:var(--ink-60);text-align:left}
+.lang-menu button:hover,.lang-menu button.active{background:var(--rice);color:var(--k1);font-weight:700}
+@media (max-width:760px){
+  .nav-links{display:none}.nav-in{gap:.5rem}.nav-actions{margin-left:auto}.lang-name{display:none}
+  .lang-button{padding:.52rem}.nav-cta{padding:.58rem .82rem}.nav-cta span{display:none}
+}
 
 /* ---------- hero ---------- */
 .hero{min-height:100svh;display:flex;align-items:center;padding:120px 0 60px;background:
@@ -355,18 +366,29 @@ footer{border-top:1px solid var(--line);padding:3.2rem 0;background:var(--rice)}
 
 <nav id="nav">
   <div class="wrap nav-in">
-    <a class="logo" href="#top" aria-label="K1 스틱소스 홈">
+    <a class="logo" href="#top" aria-label="K1 스틱소스 홈" data-i18n-aria="logo.home">
       <span class="k1">K1</span><span class="by">STICK SAUCE · by 바이트랩스</span>
     </a>
     <div class="nav-links">
-      <a href="#problem">왜 K1인가</a>
-      <a href="#lineup">제품</a>
-      <a href="#platform">레시피 플랫폼</a>
-      <a href="#how">사용법</a>
-      <a href="recipe/">K1 레시피</a>
-      <a href="youtube/" style="color:var(--k1)">🎬 유튜브 레시피</a>
+      <a href="#problem" data-i18n="nav.why">왜 K1인가</a>
+      <a href="#lineup" data-i18n="nav.products">제품</a>
+      <a href="#platform" data-i18n="nav.platform">레시피 플랫폼</a>
+      <a href="#how" data-i18n="nav.how">사용법</a>
+      <a href="recipe/" data-i18n="nav.recipes">K1 레시피</a>
+      <a href="youtube/" style="color:var(--k1)" data-i18n="nav.youtube">🎬 유튜브 레시피</a>
     </div>
-    <a class="nav-cta magnetic" href="#preorder"><i class="fa-solid fa-bell"></i>사전예약</a>
+    <div class="nav-actions">
+      <div class="lang-selector" id="landingLangSelector">
+        <button class="lang-button" id="landingLangButton" type="button" aria-label="Language">
+          <span id="landingLangFlag">🇰🇷</span><span class="lang-name" id="landingLangName">한국어</span><i class="fa-solid fa-chevron-down"></i>
+        </button>
+        <div class="lang-menu">
+          <button type="button" data-lang="ko">🇰🇷 한국어</button><button type="button" data-lang="en">🇺🇸 English</button>
+          <button type="button" data-lang="ja">🇯🇵 日本語</button><button type="button" data-lang="zh">🇨🇳 中文</button>
+        </div>
+      </div>
+      <a class="nav-cta magnetic" href="#preorder"><i class="fa-solid fa-bell"></i><span data-i18n="nav.preorder">사전예약</span></a>
+    </div>
   </div>
 </nav>
 
@@ -375,16 +397,16 @@ footer{border-top:1px solid var(--line);padding:3.2rem 0;background:var(--rice)}
   <div class="wrap hero-grid">
     <div>
       <span class="eyebrow reveal">K-Food, Simplified</span>
-      <h1 class="reveal d1"><span class="tok" id="tok">톡!</span> 털어 넣으면,<br>한국의 맛.</h1>
-      <p class="lead reveal d2">라면 스프처럼 가벼운 1회분 스틱소스.<br>계량도, 냉장 보관도, 요리 실력도 필요 없습니다.<br>세계 어디서나 3분이면 정통 한식이 완성됩니다.</p>
+      <h1 class="reveal d1" data-i18n-html="hero.title"><span class="tok" id="tok">톡!</span> 털어 넣으면,<br>한국의 맛.</h1>
+      <p class="lead reveal d2" data-i18n-html="hero.lead">라면 스프처럼 가벼운 1회분 스틱소스.<br>계량도, 냉장 보관도, 요리 실력도 필요 없습니다.<br>세계 어디서나 3분이면 정통 한식이 완성됩니다.</p>
       <div class="hero-ctas reveal d3">
-        <a class="btn btn-primary magnetic" href="#preorder"><i class="fa-solid fa-arrow-right"></i>얼리버드 사전예약</a>
-        <a class="btn btn-ghost magnetic" href="#platform"><i class="fa-solid fa-circle-play"></i>3분 레시피 보기</a>
+        <a class="btn btn-primary magnetic" href="#preorder"><i class="fa-solid fa-arrow-right"></i><span data-i18n="hero.primary">얼리버드 사전예약</span></a>
+        <a class="btn btn-ghost magnetic" href="#platform"><i class="fa-solid fa-circle-play"></i><span data-i18n="hero.secondary">3분 레시피 보기</span></a>
       </div>
-      <div class="hero-note reveal d3"><i class="fa-solid fa-plane"></i>기내 반입 OK · 상온 보관 · 부피 80% 다운</div>
+      <div class="hero-note reveal d3"><i class="fa-solid fa-plane"></i><span data-i18n="hero.note">기내 반입 OK · 상온 보관 · 부피 80% 다운</span></div>
     </div>
-    <div class="stage" id="stage" aria-label="K1 스틱소스 5종 미리보기">
-      <img class="hero-photo" id="heroPhoto" src="hero-sticks.png" alt="부채꼴로 펼쳐진 K1 스틱소스 5종 패키지">
+    <div class="stage" id="stage" aria-label="K1 스틱소스 5종 미리보기" data-i18n-aria="hero.stage">
+      <img class="hero-photo" id="heroPhoto" src="hero-sticks.png" alt="부채꼴로 펼쳐진 K1 스틱소스 5종 패키지" data-i18n-alt="hero.alt">
     </div>
   </div>
 </header>
@@ -392,10 +414,10 @@ footer{border-top:1px solid var(--line);padding:3.2rem 0;background:var(--rice)}
 <!-- ===== STATS ===== -->
 <div class="stats">
   <div class="wrap stats-grid">
-    <div class="stat reveal"><div class="num"><span data-count="3">0</span><em>분</em></div><div class="lbl">한 그릇 완성 시간</div></div>
-    <div class="stat reveal d1"><div class="num"><span data-count="80">0</span><em>%</em></div><div class="lbl">액상 대비 부피 절감</div></div>
-    <div class="stat reveal d2"><div class="num"><span data-count="0">0</span><em>%</em></div><div class="lbl">유리병 파손율</div></div>
-    <div class="stat reveal d3"><div class="num"><span data-count="10">0</span><em>종</em></div><div class="lbl">검증된 소스 라인업</div></div>
+    <div class="stat reveal"><div class="num"><span data-count="3">0</span><em data-i18n="stats.timeUnit">분</em></div><div class="lbl" data-i18n="stats.time">한 그릇 완성 시간</div></div>
+    <div class="stat reveal d1"><div class="num"><span data-count="80">0</span><em>%</em></div><div class="lbl" data-i18n="stats.volume">액상 대비 부피 절감</div></div>
+    <div class="stat reveal d2"><div class="num"><span data-count="0">0</span><em>%</em></div><div class="lbl" data-i18n="stats.breakage">유리병 파손율</div></div>
+    <div class="stat reveal d3"><div class="num"><span data-count="10">0</span><em data-i18n="stats.typeUnit">종</em></div><div class="lbl" data-i18n="stats.lineup">검증된 소스 라인업</div></div>
   </div>
 </div>
 
@@ -403,15 +425,15 @@ footer{border-top:1px solid var(--line);padding:3.2rem 0;background:var(--rice)}
 <section class="ps" id="problem">
   <div class="wrap">
     <span class="eyebrow reveal">Why K1</span>
-    <h2 class="h2 reveal d1">병에 갇힌 한국의 맛을,<br>스틱으로 꺼냈습니다</h2>
-    <p class="lead reveal d2">기존 액상 소스는 무겁고, 깨지고, 비쌉니다. K1은 라면 스프에서 답을 찾았습니다 — 가장 익숙한 형태로, 가장 낯선 시장까지.</p>
+    <h2 class="h2 reveal d1" data-i18n-html="problem.title">병에 갇힌 한국의 맛을,<br>스틱으로 꺼냈습니다</h2>
+    <p class="lead reveal d2" data-i18n="problem.lead">기존 액상 소스는 무겁고, 깨지고, 비쌉니다. K1은 라면 스프에서 답을 찾았습니다 — 가장 익숙한 형태로, 가장 낯선 시장까지.</p>
     <figure class="ps-img reveal d2">
-      <img src="travel.jpg" alt="여권, 항공권과 나란히 놓인 K1 스틱소스 3종 — 여행 가방에 들어가는 한국의 맛" loading="lazy">
+      <img src="travel.jpg" alt="여권, 항공권과 나란히 놓인 K1 스틱소스 3종 — 여행 가방에 들어가는 한국의 맛" data-i18n-alt="problem.alt" loading="lazy">
     </figure>
     <div class="ps-cards">
-      <div class="ps-card reveal"><i class="fa-solid fa-feather"></i><h3>초경량 스틱</h3><p>1회분 10~15g 정량 포장. 여행 가방, 배낭, 주머니 어디든. 항공 액체 규정도 통과합니다.</p></div>
-      <div class="ps-card reveal d1"><i class="fa-solid fa-temperature-low"></i><h3>상온 장기보관</h3><p>냉장고 자리 싸움 끝. 개봉 전까지 상온 보관, 개봉하면 딱 한 그릇 분량이라 남길 게 없습니다.</p></div>
-      <div class="ps-card reveal d2"><i class="fa-solid fa-truck-fast"></i><h3>물류비 80% 절감</h3><p>부피 80% 감소, 파손율 0%. 해외 배송비가 제품값을 넘던 시대를 끝냅니다.</p></div>
+      <div class="ps-card reveal"><i class="fa-solid fa-feather"></i><h3 data-i18n="problem.light.title">초경량 스틱</h3><p data-i18n="problem.light.desc">1회분 10~15g 정량 포장. 여행 가방, 배낭, 주머니 어디든. 항공 액체 규정도 통과합니다.</p></div>
+      <div class="ps-card reveal d1"><i class="fa-solid fa-temperature-low"></i><h3 data-i18n="problem.store.title">상온 장기보관</h3><p data-i18n="problem.store.desc">냉장고 자리 싸움 끝. 개봉 전까지 상온 보관, 개봉하면 딱 한 그릇 분량이라 남길 게 없습니다.</p></div>
+      <div class="ps-card reveal d2"><i class="fa-solid fa-truck-fast"></i><h3 data-i18n="problem.ship.title">물류비 80% 절감</h3><p data-i18n="problem.ship.desc">부피 80% 감소, 파손율 0%. 해외 배송비가 제품값을 넘던 시대를 끝냅니다.</p></div>
     </div>
   </div>
 </section>
@@ -422,26 +444,26 @@ footer{border-top:1px solid var(--line);padding:3.2rem 0;background:var(--rice)}
     <div class="lineup-head">
       <div>
         <span class="eyebrow reveal">Lineup</span>
-        <h2 class="h2 reveal d1">기초 육수 6종 + 요리 베이스 4종<br>총 10가지 한국의 맛</h2>
+        <h2 class="h2 reveal d1" data-i18n-html="lineup.title">기초 육수 6종 + 요리 베이스 4종<br>총 10가지 한국의 맛</h2>
       </div>
-      <p class="lead reveal d2">분말 소스 전문기업과 함께 개발한 검증된 배합. 추가 실험은 저희가 끝냈으니, 당신은 3분만 쓰세요.</p>
+      <p class="lead reveal d2" data-i18n="lineup.lead">분말 소스 전문기업과 함께 개발한 검증된 배합. 추가 실험은 저희가 끝냈으니, 당신은 3분만 쓰세요.</p>
     </div>
     <figure class="lineup-img reveal">
-      <img src="solution.jpg" alt="K1 스틱소스 10종 패키지와 QR 연동 스마트 앱 화면" loading="lazy">
+      <img src="solution.jpg" alt="K1 스틱소스 10종 패키지와 QR 연동 스마트 앱 화면" data-i18n-alt="lineup.alt" loading="lazy">
     </figure>
     <div class="chips" role="list">
-      <div class="chip reveal" role="listitem" style="--c:#c0392b"><i class="fa-solid fa-fish"></i><div><b>멸치 육수</b><small>Anchovy</small></div></div>
-      <div class="chip reveal" role="listitem" style="--c:#2471a3"><i class="fa-solid fa-shrimp"></i><div><b>해물 육수</b><small>Seafood</small></div></div>
-      <div class="chip reveal d1" role="listitem" style="--c:#a04000"><i class="fa-solid fa-bone"></i><div><b>사골 육수</b><small>Beef Bone</small></div></div>
-      <div class="chip reveal d1" role="listitem" style="--c:#b7950b"><i class="fa-solid fa-water"></i><div><b>황태 육수</b><small>Pollack</small></div></div>
-      <div class="chip reveal d2" role="listitem" style="--c:#1e8449"><i class="fa-solid fa-seedling"></i><div><b>다시마 육수</b><small>Kelp</small></div></div>
-      <div class="chip reveal" role="listitem" style="--c:#27ae60"><i class="fa-solid fa-carrot"></i><div><b>채수</b><small>Vegetable</small></div></div>
-      <div class="chip reveal d1" role="listitem" style="--c:#e84e1b"><i class="fa-solid fa-pepper-hot"></i><div><b>떡볶이 베이스</b><small>Tteokbokki</small></div></div>
-      <div class="chip reveal d1" role="listitem" style="--c:#c0392b"><i class="fa-solid fa-fire-burner"></i><div><b>김치찌개 베이스</b><small>Kimchi Stew</small></div></div>
-      <div class="chip reveal d2" role="listitem" style="--c:#7d6608"><i class="fa-solid fa-bowl-food"></i><div><b>된장찌개 베이스</b><small>Doenjang</small></div></div>
-      <div class="chip reveal d2" role="listitem" style="--c:#6e2c00"><i class="fa-solid fa-drumstick-bite"></i><div><b>불고기 베이스</b><small>Bulgogi</small></div></div>
+      <div class="chip reveal" role="listitem" style="--c:#c0392b"><i class="fa-solid fa-fish"></i><div><b data-i18n="product.anchovy">멸치 육수</b><small>Anchovy</small></div></div>
+      <div class="chip reveal" role="listitem" style="--c:#2471a3"><i class="fa-solid fa-shrimp"></i><div><b data-i18n="product.seafood">해물 육수</b><small>Seafood</small></div></div>
+      <div class="chip reveal d1" role="listitem" style="--c:#a04000"><i class="fa-solid fa-bone"></i><div><b data-i18n="product.beef">사골 육수</b><small>Beef Bone</small></div></div>
+      <div class="chip reveal d1" role="listitem" style="--c:#b7950b"><i class="fa-solid fa-water"></i><div><b data-i18n="product.pollack">황태 육수</b><small>Pollack</small></div></div>
+      <div class="chip reveal d2" role="listitem" style="--c:#1e8449"><i class="fa-solid fa-seedling"></i><div><b data-i18n="product.kelp">다시마 육수</b><small>Kelp</small></div></div>
+      <div class="chip reveal" role="listitem" style="--c:#27ae60"><i class="fa-solid fa-carrot"></i><div><b data-i18n="product.vegetable">채수</b><small>Vegetable</small></div></div>
+      <div class="chip reveal d1" role="listitem" style="--c:#e84e1b"><i class="fa-solid fa-pepper-hot"></i><div><b data-i18n="product.tteokbokki">떡볶이 베이스</b><small>Tteokbokki</small></div></div>
+      <div class="chip reveal d1" role="listitem" style="--c:#c0392b"><i class="fa-solid fa-fire-burner"></i><div><b data-i18n="product.kimchi">김치찌개 베이스</b><small>Kimchi Stew</small></div></div>
+      <div class="chip reveal d2" role="listitem" style="--c:#7d6608"><i class="fa-solid fa-bowl-food"></i><div><b data-i18n="product.doenjang">된장찌개 베이스</b><small>Doenjang</small></div></div>
+      <div class="chip reveal d2" role="listitem" style="--c:#6e2c00"><i class="fa-solid fa-drumstick-bite"></i><div><b data-i18n="product.bulgogi">불고기 베이스</b><small>Bulgogi</small></div></div>
     </div>
-    <p class="lineup-note reveal"><i class="fa-solid fa-scissors"></i>모든 스틱은 가위 없이 손으로 여는 Easy-Cut 구조입니다.</p>
+    <p class="lineup-note reveal"><i class="fa-solid fa-scissors"></i><span data-i18n="lineup.note">모든 스틱은 가위 없이 손으로 여는 Easy-Cut 구조입니다.</span></p>
   </div>
 </section>
 
@@ -449,18 +471,18 @@ footer{border-top:1px solid var(--line);padding:3.2rem 0;background:var(--rice)}
 <section class="platform" id="platform">
   <div class="wrap">
     <span class="eyebrow reveal">Watch · Tap · Cook</span>
-    <h2 class="h2 reveal d1">찍으면 요리사가 되는 마법,<br>K1 레시피 플랫폼</h2>
-    <p class="lead reveal d2">스틱 뒷면 QR을 찍는 순간, 그 소스에 딱 맞는 3분 레시피 영상이 열립니다. 보고, 누르고, 끓이면 끝.</p>
+    <h2 class="h2 reveal d1" data-i18n-html="platform.title">찍으면 요리사가 되는 마법,<br>K1 레시피 플랫폼</h2>
+    <p class="lead reveal d2" data-i18n="platform.lead">스틱 뒷면 QR을 찍는 순간, 그 소스에 딱 맞는 3분 레시피 영상이 열립니다. 보고, 누르고, 끓이면 끝.</p>
 
     <div class="plat-grid">
-      <div class="phone reveal" aria-label="K1 앱 화면 미리보기">
+      <div class="phone reveal" aria-label="K1 앱 화면 미리보기" data-i18n-aria="platform.phone">
         <div class="screen">
           <div class="scr-video">
             <div class="scr-play"><i class="fa-solid fa-play"></i></div>
             <div class="scr-meta">
-              <span class="scr-tag"><i class="fa-solid fa-qrcode"></i>K1 김치찌개 베이스 · 스캔됨</span>
-              <h4>3분 완성! 매콤 김치찌개</h4>
-              <p>K-Food Master · 조회 128만</p>
+              <span class="scr-tag"><i class="fa-solid fa-qrcode"></i><span data-i18n="platform.scanned">K1 김치찌개 베이스 · 스캔됨</span></span>
+              <h4 data-i18n="platform.demoTitle">3분 완성! 매콤 김치찌개</h4>
+              <p data-i18n="platform.demoMeta">K-Food Master · 조회 128만</p>
               <div class="scr-bar"><span></span></div>
             </div>
           </div>
@@ -475,19 +497,19 @@ footer{border-top:1px solid var(--line);padding:3.2rem 0;background:var(--rice)}
       </div>
 
       <div class="pillars">
-        <div class="pillar reveal"><i class="fa-solid fa-qrcode"></i><div><b>QR 원스캔 매칭</b><p>패키지마다 고유 QR. 앱 설치 없이도 웹에서 바로 재생되고, 앱에서는 내 스틱 재고까지 관리됩니다.</p></div></div>
-        <div class="pillar reveal d1"><i class="fa-solid fa-language"></i><div><b>다국어 자동 매칭</b><p>기기 언어를 감지해 영어·일본어·중국어 자막 레시피로 자동 연결. 전 세계 누구나 같은 3분.</p></div></div>
-        <div class="pillar reveal d2"><i class="fa-solid fa-users"></i><div><b>K-Food 커뮤니티</b><p>내가 만든 요리를 올리고, '3분 K-요리 챌린지'에 참여하세요. 이번 주 베스트 요리는 홈 화면에 소개됩니다.</p></div></div>
-        <div class="pillar reveal d3"><i class="fa-solid fa-bag-shopping"></i><div><b>영상에서 바로 주문</b><p>영상 속 제품 태그를 누르면 스틱 리필부터 뚝배기·앞치마 굿즈까지, 확인에서 주문까지 10초.</p></div></div>
+        <div class="pillar reveal"><i class="fa-solid fa-qrcode"></i><div><b data-i18n="platform.qr.title">QR 원스캔 매칭</b><p data-i18n="platform.qr.desc">패키지마다 고유 QR. 앱 설치 없이도 웹에서 바로 재생되고, 앱에서는 내 스틱 재고까지 관리됩니다.</p></div></div>
+        <div class="pillar reveal d1"><i class="fa-solid fa-language"></i><div><b data-i18n="platform.lang.title">다국어 자동 매칭</b><p data-i18n="platform.lang.desc">기기 언어를 감지해 영어·일본어·중국어 자막 레시피로 자동 연결. 전 세계 누구나 같은 3분.</p></div></div>
+        <div class="pillar reveal d2"><i class="fa-solid fa-users"></i><div><b data-i18n="platform.community.title">K-Food 커뮤니티</b><p data-i18n="platform.community.desc">내가 만든 요리를 올리고, '3분 K-요리 챌린지'에 참여하세요. 이번 주 베스트 요리는 홈 화면에 소개됩니다.</p></div></div>
+        <div class="pillar reveal d3"><i class="fa-solid fa-bag-shopping"></i><div><b data-i18n="platform.shop.title">영상에서 바로 주문</b><p data-i18n="platform.shop.desc">영상 속 제품 태그를 누르면 스틱 리필부터 뚝배기·앞치마 굿즈까지, 확인에서 주문까지 10초.</p></div></div>
       </div>
     </div>
 
     <div class="reel-wrap">
       <div class="reel-head reveal">
-        <h3><i class="fa-solid fa-fire"></i>지금 뜨는 레시피</h3>
+        <h3><i class="fa-solid fa-fire"></i><span data-i18n="platform.trending">지금 뜨는 레시피</span></h3>
         <div class="reel-btns">
-          <button class="reel-btn" id="reelPrev" aria-label="이전 레시피"><i class="fa-solid fa-chevron-left"></i></button>
-          <button class="reel-btn" id="reelNext" aria-label="다음 레시피"><i class="fa-solid fa-chevron-right"></i></button>
+          <button class="reel-btn" id="reelPrev" aria-label="이전 레시피" data-i18n-aria="platform.prev"><i class="fa-solid fa-chevron-left"></i></button>
+          <button class="reel-btn" id="reelNext" aria-label="다음 레시피" data-i18n-aria="platform.next"><i class="fa-solid fa-chevron-right"></i></button>
         </div>
       </div>
       <div class="reel reveal d1" id="reel"></div>
@@ -499,16 +521,16 @@ footer{border-top:1px solid var(--line);padding:3.2rem 0;background:var(--rice)}
 <section id="how">
   <div class="wrap">
     <span class="eyebrow reveal">How it works</span>
-    <h2 class="h2 reveal d1">요리 실력은 필요 없습니다.<br>순서만 있으면 됩니다</h2>
+    <h2 class="h2 reveal d1" data-i18n-html="how.title">요리 실력은 필요 없습니다.<br>순서만 있으면 됩니다</h2>
     <div class="how-grid">
       <figure class="how-photo reveal">
-        <img src="pour.jpg" alt="K1 스틱을 뜯어 뚝배기에 분말을 붓는 장면" loading="lazy">
-        <span class="badge"><i class="fa-solid fa-fire"></i>계량 없이, 톡!</span>
+        <img src="pour.jpg" alt="K1 스틱을 뜯어 뚝배기에 분말을 붓는 장면" data-i18n-alt="how.alt" loading="lazy">
+        <span class="badge"><i class="fa-solid fa-fire"></i><span data-i18n="how.badge">계량 없이, 톡!</span></span>
       </figure>
       <div class="how-steps">
-        <div class="step reveal"><i class="fa-solid fa-qrcode"></i><h3>찍고</h3><p>스틱 뒷면 QR을 스마트폰으로 스캔하면, 이 소스로 만들 수 있는 3분 레시피 영상이 바로 열립니다.</p></div>
-        <div class="step reveal d1"><i class="fa-solid fa-hand-scissors"></i><h3>톡! 털고</h3><p>Easy-Cut 스틱을 손으로 뜯어 냄비에 톡. 계량스푼도 저울도 필요 없는 1회분 정량입니다.</p></div>
-        <div class="step reveal d2"><i class="fa-solid fa-utensils"></i><h3>3분 끓이면 끝</h3><p>영상 따라 3분. 서울의 그 맛이 당신의 식탁에 그대로 올라옵니다. 완성 사진은 커뮤니티에 자랑하세요.</p></div>
+        <div class="step reveal"><i class="fa-solid fa-qrcode"></i><h3 data-i18n="how.scan.title">찍고</h3><p data-i18n="how.scan.desc">스틱 뒷면 QR을 스마트폰으로 스캔하면, 이 소스로 만들 수 있는 3분 레시피 영상이 바로 열립니다.</p></div>
+        <div class="step reveal d1"><i class="fa-solid fa-hand-scissors"></i><h3 data-i18n="how.pour.title">톡! 털고</h3><p data-i18n="how.pour.desc">Easy-Cut 스틱을 손으로 뜯어 냄비에 톡. 계량스푼도 저울도 필요 없는 1회분 정량입니다.</p></div>
+        <div class="step reveal d2"><i class="fa-solid fa-utensils"></i><h3 data-i18n="how.cook.title">3분 끓이면 끝</h3><p data-i18n="how.cook.desc">영상 따라 3분. 서울의 그 맛이 당신의 식탁에 그대로 올라옵니다. 완성 사진은 커뮤니티에 자랑하세요.</p></div>
       </div>
     </div>
   </div>
@@ -518,9 +540,9 @@ footer{border-top:1px solid var(--line);padding:3.2rem 0;background:var(--rice)}
 <section class="cta-sec" id="preorder" style="padding-top:0">
   <div class="wrap">
     <div class="cta reveal">
-      <h2>한국의 맛을,<br>세계의 식탁에.</h2>
-      <p>얼리버드 사전예약 고객에게는 런칭 기념 10종 풀 라인업 샘플러와 K1 앱 프리미엄 레시피를 가장 먼저 드립니다.</p>
-      <a class="btn magnetic" href="#" onclick="return false"><i class="fa-solid fa-envelope-open-text"></i>사전예약 알림 받기</a>
+      <h2 data-i18n-html="cta.title">한국의 맛을,<br>세계의 식탁에.</h2>
+      <p data-i18n="cta.desc">얼리버드 사전예약 고객에게는 런칭 기념 10종 풀 라인업 샘플러와 K1 앱 프리미엄 레시피를 가장 먼저 드립니다.</p>
+      <a class="btn magnetic" href="#" onclick="return false"><i class="fa-solid fa-envelope-open-text"></i><span data-i18n="cta.button">사전예약 알림 받기</span></a>
     </div>
   </div>
 </section>
@@ -530,19 +552,20 @@ footer{border-top:1px solid var(--line);padding:3.2rem 0;background:var(--rice)}
     <div class="foot">
       <div>
         <a class="logo" href="#top"><span class="k1">K1</span><span class="by">STICK SAUCE</span></a>
-        <p>바이트랩스는 Food × Technology × Data 기업입니다. K1 스틱소스는 제품과 콘텐츠를 하나로 묶어 K-Food 경험 전체를 배달합니다.</p>
+        <p data-i18n="footer.desc">바이트랩스는 Food × Technology × Data 기업입니다. K1 스틱소스는 제품과 콘텐츠를 하나로 묶어 K-Food 경험 전체를 배달합니다.</p>
       </div>
       <div class="foot-links">
-        <a href="#" aria-label="유튜브" onclick="return false"><i class="fa-brands fa-youtube"></i></a>
-        <a href="#" aria-label="인스타그램" onclick="return false"><i class="fa-brands fa-instagram"></i></a>
-        <a href="#" aria-label="틱톡" onclick="return false"><i class="fa-brands fa-tiktok"></i></a>
-        <a href="#" aria-label="이메일" onclick="return false"><i class="fa-solid fa-envelope"></i></a>
+        <a href="#" aria-label="유튜브" data-i18n-aria="footer.youtube" onclick="return false"><i class="fa-brands fa-youtube"></i></a>
+        <a href="#" aria-label="인스타그램" data-i18n-aria="footer.instagram" onclick="return false"><i class="fa-brands fa-instagram"></i></a>
+        <a href="#" aria-label="틱톡" data-i18n-aria="footer.tiktok" onclick="return false"><i class="fa-brands fa-tiktok"></i></a>
+        <a href="#" aria-label="이메일" data-i18n-aria="footer.email" onclick="return false"><i class="fa-solid fa-envelope"></i></a>
       </div>
     </div>
-    <div class="copy"><i class="fa-regular fa-copyright"></i>2026 바이트랩스(Bitelabs). All rights reserved. · K1 Stick Sauce</div>
+    <div class="copy"><i class="fa-regular fa-copyright"></i><span data-i18n="footer.copy">2026 바이트랩스(Bitelabs). All rights reserved. · K1 Stick Sauce</span></div>
   </div>
 </footer>
 
+<script src="i18n.js"></script>
 <script>
 /* ---------- reduced motion flag ---------- */
 const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -637,11 +660,11 @@ addEventListener("scroll", () => nav.classList.toggle("scrolled", scrollY > 10),
 const stage = document.getElementById("stage");
 const heroPhoto = document.getElementById("heroPhoto");
 const STICKS = [
-  {name:"김치찌개", en:"Kimchi Stew", c:"#c0392b"},
-  {name:"불고기",   en:"Bulgogi",     c:"#6e2c00"},
-  {name:"떡볶이",   en:"Tteokbokki",  c:"#e84e1b"},
-  {name:"된장찌개", en:"Doenjang",    c:"#7d6608"},
-  {name:"사골육수", en:"Beef Bone",   c:"#a04000"},
+  {key:"product.kimchi", en:"Kimchi Stew", c:"#c0392b"},
+  {key:"product.bulgogi", en:"Bulgogi", c:"#6e2c00"},
+  {key:"product.tteokbokki", en:"Tteokbokki", c:"#e84e1b"},
+  {key:"product.doenjang", en:"Doenjang", c:"#7d6608"},
+  {key:"product.beef", en:"Beef Bone", c:"#a04000"},
 ];
 const mid = (STICKS.length - 1) / 2;
 function shade(hex, pct){
@@ -654,7 +677,7 @@ function buildCssSticks(){
     const d = document.createElement("div");
     d.className = "stick"; d.dataset.i = i;
     d.style.background = `linear-gradient(165deg, ${s.c}, ${shade(s.c,-28)})`;
-    d.innerHTML = `<span class="brand">K1</span><span class="name">${s.name}</span><span class="en">${s.en}</span>`;
+    d.innerHTML = `<span class="brand">K1</span><span class="name">${K1LandingI18n.t(s.key)}</span><span class="en">${s.en}</span>`;
     stage.appendChild(d);
   });
   layoutSticks();
@@ -683,9 +706,9 @@ if (!RM) {
     if (!document.getElementById("heroPhoto")) layoutSticks();
   });
   /* 톡! bounce */
-  const tok = document.getElementById("tok");
   setInterval(() => {
-    tok.animate([{transform:"rotate(0)"},{transform:"rotate(-7deg) scale(1.06)"},{transform:"rotate(0)"}],{duration:600,easing:"cubic-bezier(.34,1.56,.64,1)"});
+    const tok = document.getElementById("tok");
+    if (tok) tok.animate([{transform:"rotate(0)"},{transform:"rotate(-7deg) scale(1.06)"},{transform:"rotate(0)"}],{duration:600,easing:"cubic-bezier(.34,1.56,.64,1)"});
   }, 4200);
 }
 
@@ -710,34 +733,38 @@ document.querySelectorAll("[data-count]").forEach(el => cio.observe(el));
 
 /* ---------- recipe reel ---------- */
 const VIDEOS = [
-  {t:"매콤 김치찌개", time:"2:48", v:"128만", l:"9.2만", g:["#3a1508","#e84e1b"], img:"kimchi.jpg"},
-  {t:"10분 컷 불고기 덮밥", time:"2:55", v:"96만", l:"7.1만", g:["#241505","#a04000"]},
-  {t:"국물 떡볶이 정석", time:"3:00", v:"211만", l:"15만", g:["#2b0b06","#c0392b"]},
-  {t:"바글바글 된장찌개", time:"2:37", v:"74만", l:"5.8만", g:["#1d1a07","#b7950b"]},
-  {t:"멸치육수 잔치국수", time:"2:52", v:"63만", l:"4.4만", g:["#101820","#2471a3"]},
-  {t:"채수 비건 김치죽", time:"2:41", v:"38만", l:"3.1만", g:["#0d1f12","#1e8449"]},
+  {key:"video.kimchi", time:"2:48", views:1280000, likes:92000, g:["#3a1508","#e84e1b"], img:"kimchi.jpg"},
+  {key:"video.bulgogi", time:"2:55", views:960000, likes:71000, g:["#241505","#a04000"]},
+  {key:"video.tteokbokki", time:"3:00", views:2110000, likes:150000, g:["#2b0b06","#c0392b"]},
+  {key:"video.doenjang", time:"2:37", views:740000, likes:58000, g:["#1d1a07","#b7950b"]},
+  {key:"video.noodle", time:"2:52", views:630000, likes:44000, g:["#101820","#2471a3"]},
+  {key:"video.vegan", time:"2:41", views:380000, likes:31000, g:["#0d1f12","#1e8449"]},
 ];
 const reel = document.getElementById("reel");
-VIDEOS.forEach(v => {
-  const c = document.createElement("div");
-  c.className = "vcard";
-  c.setAttribute("role","button");
-  c.setAttribute("tabindex","0");
-  c.setAttribute("aria-label", v.t + " 레시피 영상");
-  const bg = v.img
-    ? `linear-gradient(180deg, rgba(0,0,0,.05) 30%, rgba(0,0,0,.55)), url("${v.img}") center 35%/cover no-repeat`
-    : `radial-gradient(240px 180px at 68% 28%, ${v.g[1]}cc, transparent 70%),
-      linear-gradient(165deg, ${v.g[1]}55, ${v.g[0]} 65%)`;
-  c.innerHTML = `
-    <div class="vbg" style="background:${bg}"></div>
-    <div class="vplay"><i class="fa-solid fa-play"></i></div>
-    <div class="vinfo">
-      <span class="time">${v.time} · 3-min recipe</span>
-      <h5>${v.t}</h5>
-      <div class="stat2"><span><i class="fa-solid fa-eye"></i>${v.v}</span><span><i class="fa-solid fa-heart"></i>${v.l}</span></div>
-    </div>
-    <div class="vbar"><span></span></div>`;
-  reel.appendChild(c);
+function formatCompact(number) {
+  const locale = {ko:'ko-KR',en:'en-US',ja:'ja-JP',zh:'zh-CN'}[K1LandingI18n.language] || 'en-US';
+  return new Intl.NumberFormat(locale, {notation:'compact', maximumFractionDigits:1}).format(number);
+}
+function renderReel() {
+  reel.innerHTML = '';
+  VIDEOS.forEach(v => {
+    const title = K1LandingI18n.t(v.key);
+    const c = document.createElement("div");
+    c.className = "vcard";
+    c.setAttribute("role","button");
+    c.setAttribute("tabindex","0");
+    c.setAttribute("aria-label", K1LandingI18n.t('video.aria', {title}));
+    const bg = v.img
+      ? `linear-gradient(180deg, rgba(0,0,0,.05) 30%, rgba(0,0,0,.55)), url("${v.img}") center 35%/cover no-repeat`
+      : `radial-gradient(240px 180px at 68% 28%, ${v.g[1]}cc, transparent 70%), linear-gradient(165deg, ${v.g[1]}55, ${v.g[0]} 65%)`;
+    c.innerHTML = `<div class="vbg" style="background:${bg}"></div><div class="vplay"><i class="fa-solid fa-play"></i></div><div class="vinfo"><span class="time">${v.time} · ${K1LandingI18n.t('video.label')}</span><h5>${title}</h5><div class="stat2"><span><i class="fa-solid fa-eye"></i>${formatCompact(v.views)}</span><span><i class="fa-solid fa-heart"></i>${formatCompact(v.likes)}</span></div></div><div class="vbar"><span></span></div>`;
+    reel.appendChild(c);
+  });
+}
+renderReel();
+document.addEventListener('k1:language', () => {
+  stage.querySelectorAll('.stick .name').forEach((el, index) => { el.textContent = K1LandingI18n.t(STICKS[index].key); });
+  renderReel();
 });
 const stepW = () => reel.querySelector(".vcard").offsetWidth + 16;
 document.getElementById("reelPrev").onclick = () => reel.scrollBy({left:-stepW()*2, behavior:"smooth"});

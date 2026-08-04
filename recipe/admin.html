@@ -117,11 +117,24 @@
       <span class="logo-sub">ADMIN</span>
     </a>
     <div class="nav-center">
-      <a href="index.html" class="nav-link"><i class="fa-solid fa-arrow-left"></i> 메인으로</a>
+      <a href="index.html" class="nav-link"><i class="fa-solid fa-arrow-left"></i> <span data-admin-i18n="back">메인으로</span></a>
     </div>
     <div class="nav-right">
+      <div class="lang-selector" id="adminLangSelector">
+        <button class="lang-btn" id="adminLangBtn" type="button">
+          <span class="lang-flag" id="adminLangFlag">🇰🇷</span>
+          <span class="lang-name" id="adminLangName">한국어</span>
+          <i class="fa-solid fa-chevron-down lang-arrow"></i>
+        </button>
+        <div class="lang-dropdown" id="adminLangDropdown">
+          <button type="button" data-lang="ko"><span>🇰🇷</span> 한국어</button>
+          <button type="button" data-lang="en"><span>🇬🇧</span> English</button>
+          <button type="button" data-lang="ja"><span>🇯🇵</span> 日本語</button>
+          <button type="button" data-lang="zh"><span>🇨🇳</span> 中文</button>
+        </div>
+      </div>
       <button class="btn-secondary btn-sm" id="logoutBtn" style="display:none">
-        <i class="fa-solid fa-right-from-bracket"></i> 로그아웃
+        <i class="fa-solid fa-right-from-bracket"></i> <span data-admin-i18n="logout">로그아웃</span>
       </button>
     </div>
   </div>
@@ -131,11 +144,11 @@
 <div class="admin-gate" id="adminGate">
   <div class="admin-gate-box">
     <div style="font-size:2.5rem;margin-bottom:.8rem">🔐</div>
-    <h2>관리자 로그인</h2>
-    <p>K1 Recipe 관리자 페이지입니다</p>
-    <input type="password" id="pwInput" placeholder="비밀번호" autofocus>
-    <button class="btn-primary" id="pwSubmit"><i class="fa-solid fa-lock-open"></i> 접속</button>
-    <div class="error" id="pwError">비밀번호가 올바르지 않습니다</div>
+    <h2 data-admin-i18n="login">관리자 로그인</h2>
+    <p data-admin-i18n="loginDesc">K1 Recipe 관리자 페이지입니다</p>
+    <input type="password" id="pwInput" placeholder="비밀번호" data-admin-i18n-placeholder="password" autofocus>
+    <button class="btn-primary" id="pwSubmit"><i class="fa-solid fa-lock-open"></i> <span data-admin-i18n="enter">접속</span></button>
+    <div class="error" id="pwError" data-admin-i18n="passwordError">비밀번호가 올바르지 않습니다</div>
   </div>
 </div>
 
@@ -147,9 +160,9 @@
 
   <!-- Header -->
   <div class="admin-header">
-    <h1><i class="fa-solid fa-utensils" style="color:var(--k1)"></i> 레시피 관리</h1>
+    <h1><i class="fa-solid fa-utensils" style="color:var(--k1)"></i> <span data-admin-i18n="manage">레시피 관리</span></h1>
     <div class="admin-actions">
-      <button class="btn-primary" id="addRecipeBtn"><i class="fa-solid fa-plus"></i> 새 레시피</button>
+      <button class="btn-primary" id="addRecipeBtn"><i class="fa-solid fa-plus"></i> <span data-admin-i18n="newRecipe">새 레시피</span></button>
     </div>
   </div>
 
@@ -164,9 +177,9 @@
       <!-- YouTube -->
       <div class="form-row full">
         <div class="form-group">
-          <label><i class="fa-brands fa-youtube"></i> YouTube 영상 URL</label>
-          <input type="url" id="fYoutubeUrl" placeholder="https://www.youtube.com/watch?v=... 또는 youtu.be/...">
-          <div class="hint">전체 URL을 붙여넣으면 영상 ID가 자동 추출됩니다</div>
+          <label><i class="fa-brands fa-youtube"></i> <span data-admin-i18n="youtubeUrl">YouTube 영상 URL</span></label>
+          <input type="url" id="fYoutubeUrl" placeholder="https://www.youtube.com/watch?v=... 또는 youtu.be/..." data-admin-i18n-placeholder="youtubePlaceholder">
+          <div class="hint" data-admin-i18n="youtubeHint">전체 URL을 붙여넣으면 영상 ID가 자동 추출됩니다</div>
           <div class="yt-preview" id="ytPreview"></div>
         </div>
       </div>
@@ -174,35 +187,35 @@
       <!-- Thumbnail Image -->
       <div class="form-row">
         <div class="form-group">
-          <label><i class="fa-solid fa-image"></i> 썸네일 이미지</label>
+          <label><i class="fa-solid fa-image"></i> <span data-admin-i18n="thumbnail">썸네일 이미지</span></label>
           <div class="img-upload-area">
             <div class="img-preview" id="thumbPreview" onclick="document.getElementById('thumbInput').click()">
               <div class="placeholder" id="thumbPlaceholder">
                 <i class="fa-solid fa-cloud-arrow-up"></i>
-                클릭하여 업로드
+                <span data-admin-i18n="uploadClick">클릭하여 업로드</span>
               </div>
             </div>
             <div>
               <input type="file" accept="image/*" id="thumbInput" class="file-input-hidden">
               <button class="btn-secondary btn-sm" onclick="document.getElementById('thumbInput').click()">
-                <i class="fa-solid fa-upload"></i> 파일 선택
+                <i class="fa-solid fa-upload"></i> <span data-admin-i18n="chooseFile">파일 선택</span>
               </button>
               <button class="btn-secondary btn-sm" id="thumbClear" style="display:none">
-                <i class="fa-solid fa-trash"></i> 삭제
+                <i class="fa-solid fa-trash"></i> <span data-admin-i18n="delete">삭제</span>
               </button>
-              <div class="hint" style="margin-top:.4rem">JPG/PNG, 최대 500KB 권장</div>
+              <div class="hint" style="margin-top:.4rem" data-admin-i18n="imageHint">JPG/PNG, 최대 500KB 권장</div>
             </div>
           </div>
         </div>
         <div class="form-group">
-          <label><i class="fa-solid fa-palette"></i> 또는 그라데이션 배경 (이미지 없을 때)</label>
+          <label><i class="fa-solid fa-palette"></i> <span data-admin-i18n="gradient">또는 그라데이션 배경 (이미지 없을 때)</span></label>
           <div class="form-row" style="margin-bottom:.5rem">
             <div class="form-group">
-              <label>대표 이모지</label>
+              <label data-admin-i18n="emoji">대표 이모지</label>
               <input type="text" id="fEmoji" placeholder="🍲" maxlength="4">
             </div>
             <div class="form-group">
-              <label>배경 색상</label>
+              <label data-admin-i18n="bgColor">배경 색상</label>
               <div class="sauce-preview-row">
                 <input type="color" id="fThumbColor" value="#c0392b" style="width:60px;height:36px;border:none;padding:0;cursor:pointer">
                 <div class="sauce-color-circle" id="thumbColorPreview" style="background:#c0392b"></div>
@@ -215,19 +228,19 @@
       <!-- Basic Info -->
       <div class="form-row triple">
         <div class="form-group">
-          <label>조리 시간 (분)</label>
+          <label data-admin-i18n="cookTime">조리 시간 (분)</label>
           <input type="number" id="fCookTime" min="1" max="120" value="3">
         </div>
         <div class="form-group">
-          <label>인분</label>
+          <label data-admin-i18n="servings">인분</label>
           <input type="number" id="fServings" min="1" max="20" value="2">
         </div>
         <div class="form-group">
-          <label>난이도</label>
+          <label data-admin-i18n="difficulty">난이도</label>
           <select id="fDifficulty">
-            <option value="easy">쉬움</option>
-            <option value="medium">보통</option>
-            <option value="hard">어려움</option>
+            <option value="easy" data-admin-i18n="easy">쉬움</option>
+            <option value="medium" data-admin-i18n="medium">보통</option>
+            <option value="hard" data-admin-i18n="hard">어려움</option>
           </select>
         </div>
       </div>
@@ -235,18 +248,18 @@
       <!-- Sauce Info -->
       <div class="form-row triple">
         <div class="form-group">
-          <label>소스 이모지</label>
+          <label data-admin-i18n="sauceEmoji">소스 이모지</label>
           <input type="text" id="fSauceEmoji" placeholder="🌶️" maxlength="4">
         </div>
         <div class="form-group">
-          <label>소스 색상</label>
+          <label data-admin-i18n="sauceColor">소스 색상</label>
           <div class="sauce-preview-row">
             <input type="color" id="fSauceColor" value="#c0392b" style="width:60px;height:36px;border:none;padding:0;cursor:pointer">
             <div class="sauce-color-circle" id="sauceColorPreview" style="background:#c0392b"></div>
           </div>
         </div>
         <div class="form-group">
-          <label>가격</label>
+          <label data-admin-i18n="price">가격</label>
           <input type="text" id="fPrice" placeholder="$12.99">
         </div>
       </div>
@@ -254,7 +267,7 @@
       <!-- Amazon Link -->
       <div class="form-row full">
         <div class="form-group">
-          <label><i class="fa-brands fa-amazon"></i> Amazon 상품 링크</label>
+          <label><i class="fa-brands fa-amazon"></i> <span data-admin-i18n="amazon">Amazon 상품 링크</span></label>
           <input type="url" id="fAmazonUrl" placeholder="https://amazon.com/dp/...">
         </div>
       </div>
@@ -262,7 +275,7 @@
 
     <!-- Multi-language content -->
     <div class="form-section">
-      <h2><i class="fa-solid fa-language"></i> 다국어 콘텐츠</h2>
+      <h2><i class="fa-solid fa-language"></i> <span data-admin-i18n="multilingual">다국어 콘텐츠</span></h2>
       <div class="lang-tabs" id="formLangTabs">
         <button class="lang-tab active" data-lang="ko">🇰🇷 한국어</button>
         <button class="lang-tab" data-lang="en">🇬🇧 English</button>
@@ -349,19 +362,19 @@
 
     <!-- Form Actions -->
     <div style="display:flex;gap:.8rem;justify-content:flex-end;margin-bottom:2rem">
-      <button class="btn-secondary" id="formCancel"><i class="fa-solid fa-xmark"></i> 취소</button>
-      <button class="btn-primary" id="formSave"><i class="fa-solid fa-check"></i> 저장</button>
+      <button class="btn-secondary" id="formCancel"><i class="fa-solid fa-xmark"></i> <span data-admin-i18n="cancel">취소</span></button>
+      <button class="btn-primary" id="formSave"><i class="fa-solid fa-check"></i> <span data-admin-i18n="save">저장</span></button>
     </div>
   </div>
 
   <!-- JSON Import/Export -->
   <div class="json-section">
-    <h3><i class="fa-solid fa-database"></i> 데이터 관리</h3>
+    <h3><i class="fa-solid fa-database"></i> <span data-admin-i18n="data">데이터 관리</span></h3>
     <div class="json-actions">
-      <button class="btn-secondary btn-sm" id="jsonExport"><i class="fa-solid fa-download"></i> JSON 내보내기</button>
-      <button class="btn-secondary btn-sm" id="jsonImportBtn"><i class="fa-solid fa-upload"></i> JSON 불러오기</button>
+      <button class="btn-secondary btn-sm" id="jsonExport"><i class="fa-solid fa-download"></i> <span data-admin-i18n="export">JSON 내보내기</span></button>
+      <button class="btn-secondary btn-sm" id="jsonImportBtn"><i class="fa-solid fa-upload"></i> <span data-admin-i18n="import">JSON 불러오기</span></button>
       <input type="file" accept=".json" id="jsonImportFile" class="file-input-hidden">
-      <button class="btn-danger btn-sm" id="clearAllBtn"><i class="fa-solid fa-trash"></i> 커스텀 전체 삭제</button>
+      <button class="btn-danger btn-sm" id="clearAllBtn"><i class="fa-solid fa-trash"></i> <span data-admin-i18n="clearAll">커스텀 전체 삭제</span></button>
     </div>
   </div>
 </div>
@@ -369,10 +382,12 @@
 <!-- Toast -->
 <div class="toast" id="toast"><i class="fa-solid fa-circle-check"></i><span id="toastMsg"></span></div>
 
+<script src="admin-i18n.js"></script>
 <script>
 /* ===== K1 Admin Page ===== */
 const ADMIN_PW = '100512';
 const STORAGE_KEY = 'k1CustomRecipes';
+const at = (key, values) => K1AdminI18n.t(key, values);
 
 // ---- Password Gate ----
 const gate = document.getElementById('adminGate');
@@ -438,10 +453,10 @@ function renderStats() {
   const total = BUILTIN_IDS.length + custom.length;
   const withImages = custom.filter(r => r.thumbImage).length;
   document.getElementById('statsRow').innerHTML = `
-    <div class="stat-card"><div class="stat-num">${BUILTIN_IDS.length}</div><div class="stat-label">기본 레시피</div></div>
-    <div class="stat-card"><div class="stat-num">${custom.length}</div><div class="stat-label">커스텀 레시피</div></div>
-    <div class="stat-card"><div class="stat-num">${total}</div><div class="stat-label">전체</div></div>
-    <div class="stat-card"><div class="stat-num">${withImages}</div><div class="stat-label">이미지 포함</div></div>
+    <div class="stat-card"><div class="stat-num">${BUILTIN_IDS.length}</div><div class="stat-label">${at('statBuiltin')}</div></div>
+    <div class="stat-card"><div class="stat-num">${custom.length}</div><div class="stat-label">${at('statCustom')}</div></div>
+    <div class="stat-card"><div class="stat-num">${total}</div><div class="stat-label">${at('statTotal')}</div></div>
+    <div class="stat-card"><div class="stat-num">${withImages}</div><div class="stat-label">${at('statImages')}</div></div>
   `;
 }
 
@@ -450,7 +465,7 @@ function renderRecipeList() {
   const listEl = document.getElementById('recipeList');
 
   if (BUILTIN_IDS.length + custom.length === 0) {
-    listEl.innerHTML = '<div class="empty-admin"><i class="fa-solid fa-inbox"></i><p>등록된 레시피가 없습니다</p></div>';
+    listEl.innerHTML = `<div class="empty-admin"><i class="fa-solid fa-inbox"></i><p>${at('empty')}</p></div>`;
     return;
   }
 
@@ -458,14 +473,20 @@ function renderRecipeList() {
 
   // Built-in recipes (read-only display)
   BUILTIN_IDS.forEach(id => {
-    const name = { 'kimchi-jjigae':'김치찌개','bulgogi-dupbap':'불고기덮밥','tteokbokki':'떡볶이','doenjang-jjigae':'된장찌개','janchi-guksu':'잔치국수','vegan-juk':'비건김치죽' }[id] || id;
+    const names = {
+      ko:{'kimchi-jjigae':'김치찌개','bulgogi-dupbap':'불고기덮밥','tteokbokki':'떡볶이','doenjang-jjigae':'된장찌개','janchi-guksu':'잔치국수','vegan-juk':'비건김치죽'},
+      en:{'kimchi-jjigae':'Kimchi Stew','bulgogi-dupbap':'Bulgogi Rice Bowl','tteokbokki':'Tteokbokki','doenjang-jjigae':'Soybean Paste Stew','janchi-guksu':'Banquet Noodles','vegan-juk':'Vegan Kimchi Porridge'},
+      ja:{'kimchi-jjigae':'キムチチゲ','bulgogi-dupbap':'プルコギ丼','tteokbokki':'トッポッキ','doenjang-jjigae':'テンジャンチゲ','janchi-guksu':'チャンチグクス','vegan-juk':'ヴィーガンキムチ粥'},
+      zh:{'kimchi-jjigae':'泡菜汤','bulgogi-dupbap':'韩式烤肉盖饭','tteokbokki':'辣炒年糕','doenjang-jjigae':'大酱汤','janchi-guksu':'宴席面','vegan-juk':'纯素泡菜粥'}
+    };
+    const name = names[K1AdminI18n.language]?.[id] || names.ko[id] || id;
     const emoji = { 'kimchi-jjigae':'🍲','bulgogi-dupbap':'🍚','tteokbokki':'🍢','doenjang-jjigae':'🥘','janchi-guksu':'🍜','vegan-juk':'🥣' }[id] || '🍽️';
     const color = { 'kimchi-jjigae':'#c0392b','bulgogi-dupbap':'#6e2c00','tteokbokki':'#e84e1b','doenjang-jjigae':'#7d6608','janchi-guksu':'#2471a3','vegan-juk':'#1e8449' }[id] || '#888';
     rows += `<tr>
       <td class="thumb-cell"><div class="thumb-mini" style="background:${color}">${emoji}</div></td>
       <td><strong>${name}</strong></td>
-      <td><span class="source-badge source-builtin">기본</span></td>
-      <td style="color:var(--ink-30);font-size:.82rem">코드에 내장됨</td>
+      <td><span class="source-badge source-builtin">${at('builtin')}</span></td>
+      <td style="color:var(--ink-30);font-size:.82rem">${at('embedded')}</td>
     </tr>`;
   });
 
@@ -476,17 +497,17 @@ function renderRecipeList() {
       : `<div class="thumb-mini" style="background:${r.thumbColor || '#888'}">${r.emoji || '🍽️'}</div>`;
     rows += `<tr>
       <td class="thumb-cell">${thumb}</td>
-      <td><strong>${r.title?.ko || r.title?.en || '(제목 없음)'}</strong></td>
-      <td><span class="source-badge source-custom">커스텀</span></td>
+      <td><strong>${r.title?.[K1AdminI18n.language] || r.title?.ko || r.title?.en || at('untitled')}</strong></td>
+      <td><span class="source-badge source-custom">${at('custom')}</span></td>
       <td class="actions-cell">
-        <button class="btn-secondary btn-sm" onclick="editRecipe(${i})"><i class="fa-solid fa-pen"></i> 수정</button>
+        <button class="btn-secondary btn-sm" onclick="editRecipe(${i})"><i class="fa-solid fa-pen"></i> ${at('edit')}</button>
         <button class="btn-danger btn-sm" onclick="deleteRecipe(${i})"><i class="fa-solid fa-trash"></i></button>
       </td>
     </tr>`;
   });
 
   listEl.innerHTML = `<table class="recipe-table">
-    <thead><tr><th></th><th>레시피</th><th>유형</th><th>관리</th></tr></thead>
+    <thead><tr><th></th><th>${at('recipe')}</th><th>${at('type')}</th><th>${at('actions')}</th></tr></thead>
     <tbody>${rows}</tbody>
   </table>`;
 }
@@ -498,7 +519,7 @@ let currentThumbImage = null;
 document.getElementById('addRecipeBtn').addEventListener('click', () => {
   editingIndex = -1;
   clearForm();
-  document.getElementById('formTitle').textContent = '새 레시피 등록';
+  document.getElementById('formTitle').textContent = at('newRecipeForm');
   document.getElementById('recipeForm').style.display = 'block';
   document.getElementById('recipeList').style.display = 'none';
   document.getElementById('recipeForm').scrollIntoView({ behavior: 'smooth' });
@@ -537,7 +558,7 @@ document.getElementById('thumbInput').addEventListener('change', function(e) {
   const file = e.target.files[0];
   if (!file) return;
   if (file.size > 1024 * 1024) {
-    showToast('⚠️ 이미지가 1MB를 초과합니다. 500KB 이하를 권장합니다.');
+    showToast(at('imageLarge'));
     return;
   }
   const reader = new FileReader();
@@ -552,7 +573,7 @@ document.getElementById('thumbInput').addEventListener('change', function(e) {
 
 document.getElementById('thumbClear').addEventListener('click', () => {
   currentThumbImage = null;
-  document.getElementById('thumbPreview').innerHTML = '<div class="placeholder" id="thumbPlaceholder"><i class="fa-solid fa-cloud-arrow-up"></i>클릭하여 업로드</div>';
+  document.getElementById('thumbPreview').innerHTML = `<div class="placeholder" id="thumbPlaceholder"><i class="fa-solid fa-cloud-arrow-up"></i>${at('uploadClick')}</div>`;
   document.getElementById('thumbInput').value = '';
   document.getElementById('thumbClear').style.display = 'none';
 });
@@ -572,7 +593,7 @@ document.getElementById('formSave').addEventListener('click', () => {
   const titleKo = document.getElementById('fTitle_ko').value.trim();
 
   if (!titleKo) {
-    showToast('⚠️ 한국어 제목은 필수입니다');
+    showToast(at('titleRequired'));
     return;
   }
 
@@ -605,10 +626,10 @@ document.getElementById('formSave').addEventListener('click', () => {
   const customs = getCustomRecipes();
   if (editingIndex >= 0) {
     customs[editingIndex] = recipe;
-    showToast('✅ 레시피가 수정되었습니다');
+    showToast(at('updated'));
   } else {
     customs.push(recipe);
-    showToast('✅ 새 레시피가 등록되었습니다');
+    showToast(at('created'));
   }
   saveCustomRecipes(customs);
 
@@ -639,7 +660,7 @@ function clearForm() {
   currentThumbImage = null;
   document.getElementById('fYoutubeUrl').value = '';
   document.getElementById('ytPreview').style.display = 'none';
-  document.getElementById('thumbPreview').innerHTML = '<div class="placeholder"><i class="fa-solid fa-cloud-arrow-up"></i>클릭하여 업로드</div>';
+  document.getElementById('thumbPreview').innerHTML = `<div class="placeholder"><i class="fa-solid fa-cloud-arrow-up"></i>${at('uploadClick')}</div>`;
   document.getElementById('thumbInput').value = '';
   document.getElementById('thumbClear').style.display = 'none';
   document.getElementById('fEmoji').value = '🍲';
@@ -674,7 +695,7 @@ window.editRecipe = function(index) {
 
   editingIndex = index;
   clearForm();
-  document.getElementById('formTitle').textContent = '레시피 수정';
+  document.getElementById('formTitle').textContent = at('editRecipeForm');
 
   // Fill form
   if (r.youtubeId) {
@@ -716,24 +737,24 @@ window.editRecipe = function(index) {
 
 // Delete
 window.deleteRecipe = function(index) {
-  if (!confirm('이 레시피를 삭제하시겠습니까?')) return;
+  if (!confirm(at('confirmDelete'))) return;
   const customs = getCustomRecipes();
   customs.splice(index, 1);
   saveCustomRecipes(customs);
   renderDashboard();
-  showToast('🗑️ 레시피가 삭제되었습니다');
+  showToast(at('deleted'));
 };
 
 // ---- JSON Export/Import ----
 document.getElementById('jsonExport').addEventListener('click', () => {
   const data = getCustomRecipes();
-  if (data.length === 0) { showToast('⚠️ 내보낼 커스텀 레시피가 없습니다'); return; }
+  if (data.length === 0) { showToast(at('noExport')); return; }
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url; a.download = `k1-recipes-${new Date().toISOString().slice(0,10)}.json`;
   a.click(); URL.revokeObjectURL(url);
-  showToast(`📦 ${data.length}개 레시피를 내보냈습니다`);
+  showToast(at('exported', { count: data.length }));
 });
 
 document.getElementById('jsonImportBtn').addEventListener('click', () => {
@@ -747,7 +768,7 @@ document.getElementById('jsonImportFile').addEventListener('change', function(e)
   reader.onload = (ev) => {
     try {
       const imported = JSON.parse(ev.target.result);
-      if (!Array.isArray(imported)) throw new Error('배열 형식이 아닙니다');
+      if (!Array.isArray(imported)) throw new Error(at('invalidArray'));
       const customs = getCustomRecipes();
       let added = 0;
       imported.forEach(r => {
@@ -758,9 +779,9 @@ document.getElementById('jsonImportFile').addEventListener('change', function(e)
       });
       saveCustomRecipes(customs);
       renderDashboard();
-      showToast(`📥 ${added}개 레시피를 불러왔습니다 (중복 제외)`);
+      showToast(at('imported', { count: added }));
     } catch (err) {
-      showToast('❌ JSON 파일을 읽을 수 없습니다: ' + err.message);
+      showToast(at('importError', { error: err.message }));
     }
   };
   reader.readAsText(file);
@@ -769,11 +790,11 @@ document.getElementById('jsonImportFile').addEventListener('change', function(e)
 
 document.getElementById('clearAllBtn').addEventListener('click', () => {
   const customs = getCustomRecipes();
-  if (customs.length === 0) { showToast('삭제할 커스텀 레시피가 없습니다'); return; }
-  if (!confirm(`커스텀 레시피 ${customs.length}개를 모두 삭제하시겠습니까?\n(기본 내장 레시피는 유지됩니다)`)) return;
+  if (customs.length === 0) { showToast(at('nothingToDelete')); return; }
+  if (!confirm(at('confirmClear', { count: customs.length }))) return;
   saveCustomRecipes([]);
   renderDashboard();
-  showToast('🗑️ 커스텀 레시피가 모두 삭제되었습니다');
+  showToast(at('cleared'));
 });
 
 // ---- Utilities ----
@@ -796,6 +817,12 @@ function showToast(msg) {
   toast.classList.add('show');
   setTimeout(() => toast.classList.remove('show'), 3000);
 }
+
+document.addEventListener('k1:admin-language', () => {
+  renderDashboard();
+  const formTitle = document.getElementById('formTitle');
+  if (formTitle) formTitle.textContent = editingIndex >= 0 ? at('editRecipeForm') : at('newRecipeForm');
+});
 
 // Nav scroll
 window.addEventListener('scroll', () => {
