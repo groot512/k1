@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>유튜브 레시피 추출기 — K1 Recipe</title>
+<meta name="description" content="유튜브 링크에서 재료, 조리순서와 팁을 자동 추출해 한눈에 확인하세요.">
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap">
@@ -35,7 +36,9 @@ nav{position:sticky;top:0;z-index:100;background:rgba(255,255,255,.85);backdrop-
 .nav-links{display:flex;gap:1.6rem;font-size:.88rem;font-weight:600}
 .nav-links a{color:var(--ink-60);padding:.3rem 0;transition:color .25s}
 .nav-links a:hover,.nav-links a.active{color:var(--k1)}
-@media(max-width:640px){.nav-links{gap:.8rem;font-size:.8rem}.logo .by{display:none}}
+.nav-side{display:flex;align-items:center;gap:.8rem}.lang-selector{position:relative}.lang-button{display:flex;align-items:center;gap:.4rem;padding:.48rem .65rem;border:1px solid var(--line);border-radius:100px;background:#fff;color:var(--ink-60);font-size:.8rem;font-weight:700}.lang-menu{position:absolute;right:0;top:calc(100% + .5rem);min-width:140px;padding:.35rem;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);opacity:0;visibility:hidden;transform:translateY(-5px);transition:.2s}.lang-selector.open .lang-menu{opacity:1;visibility:visible;transform:none}.lang-menu button{display:block;width:100%;padding:.55rem .65rem;border-radius:8px;text-align:left;font-size:.82rem;color:var(--ink-60)}.lang-menu button:hover,.lang-menu button.active{background:var(--rice);color:var(--k1);font-weight:700}
+@media(max-width:640px){.nav-links{gap:.7rem;font-size:.76rem}.logo .by,.lang-name{display:none}.lang-button{padding:.48rem}.nav-in{gap:.5rem}.nav-side{gap:.5rem}}
+@media(max-width:450px){.nav-links a:first-child{display:none}}
 
 /* ===== HERO ===== */
 .hero{text-align:center;padding:56px 24px 32px}
@@ -153,10 +156,16 @@ footer a{color:var(--k1);font-weight:600}
     <a class="logo" href="../">
       <span class="k1">K1</span><span class="by">STICK SAUCE</span>
     </a>
-    <div class="nav-links">
-      <a href="../">K1 스토리</a>
-      <a href="../recipe/">K1 레시피</a>
-      <a href="./" class="active">유튜브 레시피</a>
+    <div class="nav-side">
+      <div class="nav-links">
+        <a href="../" data-yt-i18n="story">K1 스토리</a>
+        <a href="../recipe/" data-yt-i18n="recipes">K1 레시피</a>
+        <a href="./" class="active" data-yt-i18n="youtube">유튜브 레시피</a>
+      </div>
+      <div class="lang-selector" id="ytLangSelector">
+        <button class="lang-button" id="ytLangButton" type="button" aria-label="Language"><span id="ytLangFlag">🇰🇷</span><span class="lang-name" id="ytLangName">한국어</span><i class="fa-solid fa-chevron-down"></i></button>
+        <div class="lang-menu"><button type="button" data-lang="ko">🇰🇷 한국어</button><button type="button" data-lang="en">🇺🇸 English</button><button type="button" data-lang="ja">🇯🇵 日本語</button><button type="button" data-lang="zh">🇨🇳 中文</button></div>
+      </div>
     </div>
   </div>
 </nav>
@@ -164,15 +173,15 @@ footer a{color:var(--k1);font-weight:600}
 <!-- HERO + INPUT -->
 <section class="hero">
   <div class="yt-icon"></div>
-  <h1>유튜브 레시피 가져오기 <span class="badge">Beta</span></h1>
-  <p>링크만 붙여넣으면 유튜브 레시피 추출이 자동으로 끝나요.<br><strong>영상과 레시피를 한눈에</strong> 보며 더 편하게 요리하세요.</p>
+  <h1><span data-yt-i18n="hero">유튜브 레시피 가져오기</span> <span class="badge">Beta</span></h1>
+  <p data-yt-i18n-html="heroDesc">링크만 붙여넣으면 유튜브 레시피 추출이 자동으로 끝나요.<br><strong>영상과 레시피를 한눈에</strong> 보며 더 편하게 요리하세요.</p>
 </section>
 
 <section class="input-section">
   <div class="input-bar">
     <span class="icon"><i class="fa-solid fa-magnifying-glass"></i></span>
-    <input type="text" id="urlInput" placeholder="유튜브 링크를 붙여넣으세요" autocomplete="off">
-    <button id="extractBtn" onclick="startExtract()">추출하기</button>
+    <input type="text" id="urlInput" placeholder="유튜브 링크를 붙여넣으세요" data-yt-i18n-placeholder="placeholder" autocomplete="off">
+    <button id="extractBtn" onclick="startExtract()" data-yt-i18n="extract">추출하기</button>
   </div>
 </section>
 
@@ -181,15 +190,15 @@ footer a{color:var(--k1);font-weight:600}
 <!-- SAVED RECIPES GALLERY -->
 <div class="saved-section" id="savedSection" style="display:none">
   <div class="saved-header">
-    <h2>📚 저장된 레시피 <span class="count" id="savedCount"></span></h2>
+    <h2>📚 <span data-yt-i18n="saved">저장된 레시피</span> <span class="count" id="savedCount"></span></h2>
   </div>
   <div class="saved-grid" id="savedGrid"></div>
 </div>
 
 <div class="loading" id="loading">
   <div class="spinner"></div>
-  <p id="loadingText">레시피를 분석하고 있어요...</p>
-  <p style="color:var(--ink-30);font-size:12px;margin-top:6px" id="loadingStep">자막을 가져오는 중</p>
+  <p id="loadingText" data-yt-i18n="loading">레시피를 분석하고 있어요...</p>
+  <p style="color:var(--ink-30);font-size:12px;margin-top:6px" id="loadingStep" data-yt-i18n="loadingInitial">자막을 가져오는 중</p>
 </div>
 
 <!-- RESULT -->
@@ -206,20 +215,20 @@ footer a{color:var(--k1);font-weight:600}
         <div class="pill"><i class="fa-regular fa-clock"></i> <span id="metaCookTime">-</span></div>
         <div class="pill"><i class="fa-solid fa-users"></i> <span id="metaServings">-</span></div>
         <div class="pill"><i class="fa-solid fa-chart-simple"></i> <span id="metaDifficulty">-</span></div>
-        <div class="pill"><i class="fa-solid fa-closed-captioning"></i> 자막 <span id="metaTranscript">-</span>줄</div>
+        <div class="pill"><i class="fa-solid fa-closed-captioning"></i> <span data-yt-i18n="transcript">자막</span> <span id="metaTranscript">-</span><span data-yt-i18n="lines">줄</span></div>
       </div>
     </div>
   </div>
 
   <div class="tabs">
-    <button class="active" onclick="switchTab('ingredients')">🥬 재료</button>
-    <button onclick="switchTab('steps')">👨‍🍳 조리순서</button>
-    <button onclick="switchTab('tips')">💡 팁</button>
+    <button class="active" onclick="switchTab('ingredients')" data-yt-i18n="ingredients">🥬 재료</button>
+    <button onclick="switchTab('steps')" data-yt-i18n="steps">👨‍🍳 조리순서</button>
+    <button onclick="switchTab('tips')" data-yt-i18n="tips">💡 팁</button>
   </div>
 
   <div class="tab-content active" id="tab-ingredients">
     <div class="ingredients-card">
-      <div class="card-header">🥬 재료 <span id="ingredientCount" style="color:var(--ink-30);font-size:13px;font-weight:400"></span></div>
+      <div class="card-header"><span data-yt-i18n="ingredients">🥬 재료</span> <span id="ingredientCount" style="color:var(--ink-30);font-size:13px;font-weight:400"></span></div>
       <table class="ingredient-table" id="ingredientTable"><tbody></tbody></table>
     </div>
   </div>
@@ -228,7 +237,7 @@ footer a{color:var(--k1);font-weight:600}
   </div>
   <div class="tab-content" id="tab-tips">
     <div class="tips-card" id="tipsCard">
-      <h3>💡 요리 팁</h3>
+      <h3 data-yt-i18n="cookingTips">💡 요리 팁</h3>
       <ul id="tipsList"></ul>
     </div>
   </div>
@@ -236,15 +245,17 @@ footer a{color:var(--k1);font-weight:600}
 </div>
 
 <footer>
-  <div class="wrap">© 2026 바이트랩스(Bitelabs) · <a href="../">K1 Stick Sauce</a> · <a href="../recipe/">레시피</a></div>
+  <div class="wrap">© 2026 Bitelabs · <a href="../">K1 Stick Sauce</a> · <a href="../recipe/" data-yt-i18n="footerRecipes">레시피</a></div>
 </footer>
 
+<script src="i18n.js"></script>
 <script>
 // ========== CONFIG ==========
 // Render 배포 후 이 URL을 실제 서버 주소로 교체
 const API_URL = 'https://k1-api.onrender.com';
 
 let currentData = null;
+const yt = (key, values) => K1YouTubeI18n.t(key, values);
 
 function tsToSeconds(ts) {
   const p = ts.split(':').map(Number);
@@ -268,31 +279,32 @@ function seekTo(ts) {
 
 async function startExtract() {
   const url = document.getElementById('urlInput').value.trim();
-  if (!url) { showError('유튜브 링크를 입력해주세요!'); return; }
+  if (!url) { showError(yt('required')); return; }
   hideError();
   document.getElementById('result').classList.remove('active');
   document.getElementById('loading').classList.add('active');
   document.getElementById('extractBtn').disabled = true;
 
-  const steps = ['영상 정보를 가져오는 중...','자막을 추출하는 중...','AI가 레시피를 분석하는 중... (10~20초)','결과를 정리하는 중...'];
+  const steps = [yt('loadVideo'),yt('loadTranscript'),yt('loadAI'),yt('loadFinish')];
+  document.getElementById('loadingStep').textContent = steps[0];
   let si = 0;
   const timer = setInterval(() => { si = Math.min(si+1,steps.length-1); document.getElementById('loadingStep').textContent = steps[si]; }, 4000);
 
   try {
     const resp = await fetch(API_URL+'/api/extract', {
       method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({url}),
+      body: JSON.stringify({url, language:K1YouTubeI18n.language}),
     });
     const data = await resp.json();
     clearInterval(timer);
-    if (!resp.ok || data.error) throw new Error(data.error || '알 수 없는 오류');
+    if (!resp.ok || data.error) throw new Error(data.error || yt('unknown'));
     currentData = data;
     renderResult(data);
     if (data.saved) loadSavedRecipes(); // 갤러리 새로고침
   } catch(err) {
     clearInterval(timer);
     if (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')) {
-      showError('서버에 연결할 수 없습니다. 추출 서버가 실행 중인지 확인해주세요. (현재: '+API_URL+')');
+      showError(yt('network'));
     } else { showError(err.message); }
   } finally {
     document.getElementById('loading').classList.remove('active');
@@ -302,7 +314,7 @@ async function startExtract() {
 
 function showError(msg) { const el=document.getElementById('errorMsg'); el.textContent='❌ '+msg; el.classList.add('active'); }
 function hideError() { document.getElementById('errorMsg').classList.remove('active'); }
-function difficultyKo(d) { return {easy:'쉬움 ⭐',medium:'보통 ⭐⭐',hard:'어려움 ⭐⭐⭐'}[d]||d; }
+function difficultyLabel(d) { return {easy:yt('easy'),medium:yt('medium'),hard:yt('hard')}[d]||d; }
 
 function renderResult(data) {
   const {videoId,videoInfo,recipe,transcriptLength} = data;
@@ -311,27 +323,27 @@ function renderResult(data) {
   document.getElementById('channelName').textContent = videoInfo.channel ? '📺 '+videoInfo.channel : '';
   document.getElementById('metaCookTime').textContent = recipe.cookTime||'-';
   document.getElementById('metaServings').textContent = recipe.servings||'-';
-  document.getElementById('metaDifficulty').textContent = difficultyKo(recipe.difficulty);
+  document.getElementById('metaDifficulty').textContent = difficultyLabel(recipe.difficulty);
   document.getElementById('metaTranscript').textContent = transcriptLength;
 
   const tbody = document.querySelector('#ingredientTable tbody');
   tbody.innerHTML = '';
   const ings = recipe.ingredients||[];
-  document.getElementById('ingredientCount').textContent = '('+ings.length+'가지)';
+  document.getElementById('ingredientCount').textContent = yt('ingredientCount',{count:ings.length});
   ings.forEach(i => { const tr=document.createElement('tr'); tr.innerHTML='<td>'+i.name+'</td><td>'+(i.amount||'')+'</td>'; tbody.appendChild(tr); });
 
   const stepsList = document.getElementById('stepsList');
   stepsList.innerHTML = '';
   (recipe.steps||[]).forEach((s,i,arr) => {
     const c=document.createElement('div'); c.className='step-card';
-    c.innerHTML='<div class="step-header"><div class="step-badge"><div class="step-number">'+(s.step||i+1)+'</div><span class="step-counter">Step '+(s.step||i+1)+'/'+arr.length+'</span></div>'+(s.timestamp?'<button class="step-timestamp" onclick="seekTo(\''+s.timestamp+'\')">'+s.timestamp+'</button>':'')+'</div><div class="step-body"><div class="step-title">'+(s.title||'')+'</div><div class="step-desc">'+(s.description||'')+'</div></div>';
+    c.innerHTML='<div class="step-header"><div class="step-badge"><div class="step-number">'+(s.step||i+1)+'</div><span class="step-counter">'+yt('step')+' '+(s.step||i+1)+'/'+arr.length+'</span></div>'+(s.timestamp?'<button class="step-timestamp" onclick="seekTo(\''+s.timestamp+'\')">'+s.timestamp+'</button>':'')+'</div><div class="step-body"><div class="step-title">'+(s.title||'')+'</div><div class="step-desc">'+(s.description||'')+'</div></div>';
     stepsList.appendChild(c);
   });
 
   const tipsList = document.getElementById('tipsList');
   tipsList.innerHTML = '';
   const tips = recipe.tips||[];
-  if (!tips.length) tipsList.innerHTML='<li>이 영상에서는 별도의 팁이 언급되지 않았어요.</li>';
+  if (!tips.length) tipsList.innerHTML='<li>'+yt('noTips')+'</li>';
   else tips.forEach(t => { const li=document.createElement('li'); li.textContent=t; tipsList.appendChild(li); });
 
   document.getElementById('result').classList.add('active');
@@ -341,7 +353,7 @@ function renderResult(data) {
 
 function exportJSON() {
   if(!currentData) return;
-  navigator.clipboard.writeText(JSON.stringify(currentData,null,2)).then(()=>alert('📋 JSON이 클립보드에 복사되었습니다!')).catch(()=>alert('복사 실패 — 브라우저 권한을 확인하세요'));
+  navigator.clipboard.writeText(JSON.stringify(currentData,null,2)).then(()=>alert(yt('copySuccess'))).catch(()=>alert(yt('copyFail')));
 }
 function downloadJSON() {
   if(!currentData) return;
@@ -359,7 +371,7 @@ async function loadSavedRecipes() {
     const grid = document.getElementById('savedGrid');
     if (!recipes.length) { section.style.display='none'; return; }
     section.style.display='block';
-    document.getElementById('savedCount').textContent = recipes.length+'개';
+    document.getElementById('savedCount').textContent = yt('count',{count:recipes.length});
     grid.innerHTML = '';
     recipes.forEach(r => {
       const card = document.createElement('div');
@@ -373,7 +385,7 @@ async function loadSavedRecipes() {
           <div class="card-meta">
             ${r.cook_time?'<span><i class="fa-regular fa-clock"></i> '+r.cook_time+'</span>':''}
             ${r.servings?'<span><i class="fa-solid fa-users"></i> '+r.servings+'</span>':''}
-            ${r.difficulty?'<span>'+difficultyKo(r.difficulty)+'</span>':''}
+            ${r.difficulty?'<span>'+difficultyLabel(r.difficulty)+'</span>':''}
           </div>
         </div>`;
       grid.appendChild(card);
@@ -397,11 +409,16 @@ async function loadRecipeDetail(videoId) {
       transcriptLength: r.transcript_length
     };
     renderResult(currentData);
-  } catch(e) { showError('레시피를 불러올 수 없습니다: '+e.message); }
+  } catch(e) { showError(yt('detailFail',{error:e.message})); }
 }
 
 // 페이지 로드 시 저장된 레시피 표시
 loadSavedRecipes();
+
+document.addEventListener('k1:youtube-language', () => {
+  if (currentData) renderResult(currentData);
+  loadSavedRecipes();
+});
 
 document.getElementById('urlInput').addEventListener('keydown', e => { if(e.key==='Enter') startExtract(); });
 </script>

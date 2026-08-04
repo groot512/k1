@@ -5,7 +5,7 @@
 // ============================================================
 const UI = {
   ko: {
-    'nav.home':'홈', 'nav.store':'K1 스토어',
+    'nav.home':'홈', 'nav.store':'K1 스토어', 'nav.admin':'관리',
     'hero.eyebrow':'Global K-Food Recipe Community',
     'hero.title':'전 세계 누구나,\n<span class="accent">3분</span>이면 한국의 맛',
     'hero.sub':'유튜브 레시피 영상을 보고, 따라 만들고, 경험을 나누세요.',
@@ -26,9 +26,13 @@ const UI = {
     'footer.desc':'K1 스틱소스로 세계 어디서나 한국의 맛을 경험하세요.',
     'footer.rights':'© 2026 바이트랩스(Bitelabs). All rights reserved.',
     'views':'조회','likes.n':'좋아요',
+    'search.empty':'검색 결과가 없습니다.', 'video.play':'YouTube에서 재생',
+    'pwa.add':'홈 화면에 추가하기', 'pwa.install':'설치', 'user.you':'나',
+    'meta.title':'K1 Recipe — 세계의 K-Food 레시피 커뮤니티',
+    'meta.description':'K1 스틱소스와 함께하는 글로벌 K-Food 레시피 플랫폼. 유튜브 레시피 영상과 다국어 커뮤니티를 만나보세요.',
   },
   en: {
-    'nav.home':'Home', 'nav.store':'K1 Store',
+    'nav.home':'Home', 'nav.store':'K1 Store', 'nav.admin':'Admin',
     'hero.eyebrow':'Global K-Food Recipe Community',
     'hero.title':'Anyone, Anywhere,\n<span class="accent">3 Minutes</span> to Korean Flavor',
     'hero.sub':'Watch YouTube recipe videos, cook along, and share your experience.',
@@ -49,9 +53,13 @@ const UI = {
     'footer.desc':'Experience Korean flavors anywhere with K1 Stick Sauce.',
     'footer.rights':'© 2026 Bitelabs. All rights reserved.',
     'views':'views','likes.n':'likes',
+    'search.empty':'No recipes found.', 'video.play':'Play on YouTube',
+    'pwa.add':'Add to your home screen', 'pwa.install':'Install', 'user.you':'You',
+    'meta.title':'K1 Recipe — Global K-Food Recipe Community',
+    'meta.description':'Discover K-Food recipes with K1 Stick Sauce, YouTube cooking videos, and a multilingual community.',
   },
   ja: {
-    'nav.home':'ホーム', 'nav.store':'K1ストア',
+    'nav.home':'ホーム', 'nav.store':'K1ストア', 'nav.admin':'管理',
     'hero.eyebrow':'Global K-Food Recipe Community',
     'hero.title':'世界中の誰でも、\n<span class="accent">3分</span>で韓国の味',
     'hero.sub':'YouTubeレシピ動画を見て、一緒に作って、体験をシェアしましょう。',
@@ -72,9 +80,13 @@ const UI = {
     'footer.desc':'K1スティックソースで世界中どこでも韓国の味を体験しましょう。',
     'footer.rights':'© 2026 Bitelabs. All rights reserved.',
     'views':'再生','likes.n':'いいね',
+    'search.empty':'レシピが見つかりません。', 'video.play':'YouTubeで再生',
+    'pwa.add':'ホーム画面に追加', 'pwa.install':'インストール', 'user.you':'あなた',
+    'meta.title':'K1 Recipe — 世界のK-Foodレシピコミュニティ',
+    'meta.description':'K1スティックソース、YouTube料理動画、多言語コミュニティでK-Foodレシピを楽しみましょう。',
   },
   zh: {
-    'nav.home':'首页', 'nav.store':'K1商店',
+    'nav.home':'首页', 'nav.store':'K1商店', 'nav.admin':'管理',
     'hero.eyebrow':'Global K-Food Recipe Community',
     'hero.title':'任何人，任何地方，\n<span class="accent">3分钟</span>品尝韩国味道',
     'hero.sub':'观看YouTube食谱视频，跟着做，分享你的体验。',
@@ -95,6 +107,10 @@ const UI = {
     'footer.desc':'用K1棒状酱料在世界任何地方体验韩国味道。',
     'footer.rights':'© 2026 Bitelabs. 保留所有权利。',
     'views':'播放','likes.n':'点赞',
+    'search.empty':'没有找到食谱。', 'video.play':'在YouTube播放',
+    'pwa.add':'添加到主屏幕', 'pwa.install':'安装', 'user.you':'我',
+    'meta.title':'K1 Recipe — 全球K-Food食谱社区',
+    'meta.description':'通过K1棒状酱料、YouTube烹饪视频和多语言社区探索K-Food食谱。',
   }
 };
 
@@ -424,12 +440,18 @@ function updateStaticI18n() {
     const key = el.dataset.i18n;
     el.textContent = t(key);
   });
+  document.querySelectorAll('[data-i18n-aria]').forEach(el => {
+    el.setAttribute('aria-label', t(el.dataset.i18nAria));
+  });
   document.getElementById('langFlag').textContent = LANG_META[currentLang].flag;
   document.getElementById('langName').textContent = LANG_META[currentLang].name;
   document.querySelectorAll('.lang-dropdown button').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.lang === currentLang);
   });
   document.documentElement.lang = currentLang === 'zh' ? 'zh-CN' : currentLang;
+  document.title = t('meta.title');
+  const metaDescription = document.querySelector('meta[name="description"]');
+  if (metaDescription) metaDescription.content = t('meta.description');
 }
 
 function setLang(lang) {
@@ -510,7 +532,7 @@ function renderHome(container) {
       );
       grid.innerHTML = filtered.length
         ? filtered.map(r => renderCard(r)).join('')
-        : `<div class="empty-state"><i class="fa-solid fa-utensils"></i><p>No results</p></div>`;
+        : `<div class="empty-state"><i class="fa-solid fa-utensils"></i><p>${t('search.empty')}</p></div>`;
       bindCardClicks();
     });
   }
@@ -569,7 +591,7 @@ function renderDetail(container, r) {
                 <div class="video-placeholder" id="videoPlaceholder">
                   <i class="fa-solid fa-circle-play"></i>
                   <div>${tl(r.title)}</div>
-                  <span>YouTube · Click to play</span>
+                  <span>YouTube · ${t('video.play')}</span>
                 </div>
               </div>
               <!-- Product Popup (Amazon Ad) -->
@@ -786,7 +808,7 @@ function submitComment(recipe) {
   if (!text) return;
 
   const newComment = {
-    user: t('like') === 'Like' ? 'You' : '나',
+    user: t('user.you'),
     flag: LANG_META[currentLang].flag,
     lang: currentLang,
     time: 'now',
@@ -811,9 +833,8 @@ function submitComment(recipe) {
 //  10. Utilities
 // ============================================================
 function formatNum(n) {
-  if (n >= 10000) return (n / 10000).toFixed(1).replace(/\.0$/, '') + '만';
-  if (n >= 1000) return (n / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
-  return String(n);
+  const locale = { ko:'ko-KR', en:'en-US', ja:'ja-JP', zh:'zh-CN' }[currentLang] || 'ko-KR';
+  return new Intl.NumberFormat(locale, { notation:'compact', maximumFractionDigits:1 }).format(n);
 }
 
 function clearAllTimers() {
